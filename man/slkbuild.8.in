@@ -1,0 +1,50 @@
+.TH slkbuild 8 "January 19, 2010" "slkbuild"
+.SH NAME
+slkbuild - automated build script creation tool
+
+.SH SYNOPSIS
+.B slkbuild
+[\fIoptions\fR]
+
+.SH DESCRIPTION
+\fBslkbuild\fP is a script inspired by makepkg from arch which greatly simplifies the build process. It parses an easy to create SLKBUILD meta-file and from that creates a conventional build script that follows all of the slackware packaging standards that can be run on its own. See 
+.BR SLKBUILD (5) 
+for details on how to create proper meta-files.
+
+The advantage of using slkbuild is that it ensures package uniformity and allows for an easy to edit meta-file in the event that one might require customization or might need to update the script for new releases. It also makes the buid process much quicker as downloading the source, untarring, gzipping man and info pages, stripping binaries, making sure on graphical applications that the menu entry is compliant as well as a host of other things are taken care of automatically freeing up time that would otherwise be consumed by these redundant tasks.
+
+.SH OPTIONS
+.TP
+.B slkbuild
+When run with no arguments, slkbuild sources the SLKBUILD in the current directory (the SLKBUILD must be in the current directory), and creates a conventional build-$pkgname.sh script, which you can then inspect or do whatever with and then run.
+.TP
+.B slkbuild \-g, --generate [prototype]
+Copies over SLKBUILD prototypes stored in /etc/slkbuild. It optionally takes a prototype argument which allows for multiple prototypes to be stored. The prototype argument is the extension of the SLKBUILD prototype stored in /etc/slkbuild. For example, if you did slkbuild -g python, /etc/slkbuild/SLKBUILD.python will be copied over, slkbuild -g foo, /etc/slkbuild/SLKBUILD.foo will be copied over. If called with no prototype argument, slkbuild -g, it moves over /etc/slkbuild/SLKBUILD.
+.TP
+.B slkbuild \-x, --execute
+Does everything that running it with no arguments would but afterwards actually executes the build-$pkgname.sh script. Remember that like running any build script, this option will require you to be root. This option does log the output of the build script's execution to build-$pkgname.log in the current directory.
+.TP
+.B slkbuild \-c, --clean-dirs
+Creates a build-$pkgname.sh script that, when it is run, will remove the pkg and src directories after building the package.
+.TP
+.B slkbuild \-X, --x-and-clean
+Same behaviour as -x and -c combined together
+.TP
+.B slkbuild \-h, --help
+Displays a help dialog.
+.TP
+.B slkbuild \-v, --version
+Outputs the slkbuild version.
+.
+.
+.SH AUTHORS
+slkbuild was forked from buildpkg by George Vlahavas <vlahavas~at~gmail~dot~com>
+
+buildpkg was initially written by Matthew Bruenig <matthewbruenig@gmail.com>.
+.br
+See the AUTHORS file for a list of other contributors.
+.PP
+Report bugs or suggestions to @email@.
+
+.SH SEE ALSO
+.BR SLKBUILD(5)

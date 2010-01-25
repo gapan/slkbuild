@@ -1,0 +1,139 @@
+- v0.6.4 
+	  * Dereference symlinks when copying source files to /usr/src
+	  * Corrected some typos in the SLKBUILD man page.
+
+- v0.6.3 (January 14, 2010)
+	  * Added support for $SLKCFLAGS. It is set equal to $CFLAGS.
+	  * Added support for $ARCH. It is set equal to $arch
+	  * Added --build=$arch-slackware-linux to the default configure options
+	  * Dereference symlinks placed in source()
+	  * Clear up what the -c option does in the --help message and in the slkbuild man page
+
+- v0.6.2 (January 4, 2010)
+	  * Fixed generating prototypes using an argument with -g
+	  * Added perl prototype
+	  * Updated manpage for x86_64 arch
+
+- v0.6.1 (December 16, 2009)
+	  * Fixed setting LIBDIRSUFFIX correctly
+
+- v0.6 (November 26, 2009)
+          * Added option to user #Packager: instead of #Maintainer heading in SLKBUILD
+	  * Added 'nosrcpack' option to SLKBUILD
+
+- v0.5 (August 2, 2009)
+	  * Added support for lzma and xz compressed archives as sources
+	  * dir.gz info file is deleted if present
+
+- v0.4 (July 6, 2009)
+	  * Fixed uncompressing of zip files.
+
+- v0.3 (June 30, 2009)
+          * Removed check_for_menu_compliance. If icons are present in usr/share/pixmaps, you'll have to move them manually to usr/share/icons/hicolor/$size/apps or wherever. I found some apps that wouldn't work, or wouldn't show the icon if it was moved from usr/share/pixmaps, so we can't automate this.
+- v0.2 (June 11, 2009)
+          * Auto-sets CFLAGS/CXXFLAGS="-O2 -fPIC" and LIBDIRSUFFIX="64" if arch is "x86_64"
+          * Added --libdir=/usr/lib/${LIBDIRSUFFIX} in SLKBUILD template
+          
+- v0.1 (June 10, 2009)
+          * Initial release as slkbuild
+          * Creates txz packages by default
+          * Added option for creating tgz, tbz or tlz packages
+          * If sourcetemplate is not set, an src file will not be created
+	  * Removed all dependency related stuff
+          * Removed zen-pkgcheck.pl option
+          * Removed automatic installation of .desktop files that appear in the source array
+	  * Removed zenver variable, package name now is $pkgname-$pkgver-$arch-$pkgrel.txz
+	  * Renamed ZENBUILD to SLKBUILD and buildpkg to slkbuild
+
+ChangeLog below this part refers to buildpkg:
+
+- v1.6.1 (November 8, 2008)
+	  * fix auto dotnew handling
+	  * option noautodotnew added, to don't include the auto dotnew handling
+	  * added check for sourcetemplate
+- v1.6.0 (June 30, 2008)
+	  * delete directory usr/doc/$pkgname-$pkgver if empty
+	  * delete zero length files in usr/doc/$pkgname-$pkgver
+	  * check it is needed to add code to handle info pages, this one does two checks, if the usr/info directory exists and if install-info is in the doinst.sh before adding the necessary code.
+	  * add code to handle all file in etc to be handled by dotnew, if no dotnew is specified in the SLKBUILD and the etc directory exists.
+	  * remove the usr/info/dir file if present
+	  * added a "ls -lR $startdir/pkg" to create_package so that all files permissions and ownerships would be appended in the log file, suggestion by George Vlahavas
+- v1.5.0 (June 7, 2008)
+	  * added creation of package.src file from template from SLKBUILD sourcetemplate variable
+- v1.4.3 (February 23, 2008)
+	  * added -z or --zen-pkgcheck option to use zen-pkgcheck to check for rules complainces (only if run through slkbuild, it is not done in the generated buildscript)
+- v1.4.2 (December 08, 2007)
+	  *changes in buildfile creation naming, now it's build-$pkgname-$pkgver-$zenver.$pkgrel.log, thanks to George Vlahavas for the suggestion
+	  *changes in script processing, from sh to bash, thanks to Matthew Bruenig the suggestion
+- v1.4.1 (November 27, 2007)
+	  *changes in the handling of dotnew
+- v1.4.0 (November 1, 2007)
+	  *changes in command line options handling
+	  *fixed some typos
+	  *changes in check_for_menu_compliance, not loading desktop file anymore, bug report by George Vlahavas
+	  *changes in extract_source, thanks to Matthew Bruenig for suggestion
+- v1.3.7 (October 23, 2007)
+          *remove "don't remove .dep file if both no requiredbuilder and no extradeps are set", too complicated....
+          *added keepdepfile option, to don't delete any existing dep file, and don't run detect_dependencies function
+	  *yet another change in set_post_permissions, check for directory existence before running chown
+	  *change in handling of sysconfdir, it was hardcoded into the script, this no longer happens
+- v1.3.6 (October 21, 2007)
+	  *change in set_post_permissions, re-fix
+	  *change in nostrip handling, if nostrip is set don't include the function strip_binaries in the final buildscript
+	  *change in "don't remove .dep file if both no requiredbuilder and no extradeps are set", clarification, norequiredbuilder has to be set and extradepends=(), instead of and extradepends commented or inexistent.
+- v1.3.5 (October 19, 2007)
+	  *don't remove .dep file if both no requiredbuilder and no extradeps are set
+	  *change in set_post_permissions, check specificly for permissions root:bin in usr/bin instead of always chown files in usr/bin
+- v1.3.4 (October 17, 2007)
+	  *sane permissions on usr/doc (644 for files and 755 for directories)
+	  *changes in extract_source function now searches for .tgz .tar and .zip, instead of tgz tar and zip, this could lead to problems, example: p7zip_4.55_src_all.tar.bz2 it would fall down under both tar and zip, being zip a false positive
+	  *added support to move svg icons to usr/share/icons/hicolor/scalable/apps/
+	  *added nostrip option to prevent the execution of the stripping function, can be useful in some applications, that break if they are stripped, like acroread
+- v1.3.3 (October 13, 2007)
+	  *fix broken don't create a .dep file, if both norequiredbuilder is set and extradeps is empty
+- v1.3.2 (October 11, 2007)
+	  *if a .desktop file is included in the source array put it in /usr/share/applications, thanks to George Vlahavas for the suggestion
+	  *add fix for icons non-root permissions, thanks to George Vlahavas for the suggestion
+	  *add fix for usr/doc non-root permissions, thanks to George Vlahavas for the suggestion
+- v1.3.1 (October 10, 2007)
+	  *put source array, even if in multiple lines
+	  *added docs array to the build-$pkgname.sh script, no more hardcoded documents in source
+	  *don't handle files in /usr/share/pixmaps or /pkg/usr/share/icons that aren't with a png extension
+	  *don't create a .dep file, if both norequiredbuilder is set and extradeps is empty
+- v1.3.0 (October 10, 2007)
+	  *full path to makepkg, safe approach when using fakeroot, thanks to Paolo Sanchini for the suggestion
+	  *added -X option, that combines -x and -c option, thanks to Paolo Sanchini for the suggestion
+	  *added support to fix symlinks in man pages, example view.1->vim.1 vim.1 is gziped, so broken symlink, this will fix it, thanks to Paolo Sanchini for the suggestion
+- v1.2.5 (October 09, 2007)
+	  *refix to "also include the SLKBUILD along with the buildscripts in the package", added in v1.2.3
+	  *if two or more variables are commented, display a warning message
+- v1.2.4 (October 08, 2007)
+	  *fix error in handling of check_for_menu_complaince, if a directory with the same name of the icon exists it will also be moved, this should not happen
+	  *added option -c or --clean-dirs to clean the dirs pkg and src
+- v1.2.3 (September 29, 2007)
+	  *also include the SLKBUILD along with the buildscripts in the package
+	  *added REQUIREDBUILDERFLATDEPS option
+- v1.2.2 (September 08, 2007)
+	  *fixed some typos
+	  *fixed broken SLKBUILD, if no source array was defined it would not build, this has being fixed, this bug was introduced when added the feature: "added source array to the build-$pkgname.sh script, no more hardcoded $pkgver in source"
+- v1.2.1 (August 29, 2007)
+	  *Change warning message if no Maintainer is set in SLKBUILD
+	  *put all _*= in the buildscript, as temporary variables for svn, cvs or problematic version variables
+	  *added NOREQUIREDBUILDER option, sometimes requiredbuilder take way to long to detect deps, when rebuilding this can save time...
+- v1.2.0 (August 26, 2007)
+	  *populate version through makefile
+	  *tell how many characters over 70 are present in slack-desc
+	  *add support for tgz and zip extraction
+	  *change to only parse source array to extract files, instead of all files present
+	  *change in CFLAGS/CXXFLAGS, no "if", faster parsing
+	  *add support for #Former Maintainer(s) in SLKBUILD
+	  *don't build if #Maintainer: Name <email@address.com> is set in SLKBUILD
+	  *Added AUTHORS and TODO to the documentation
+	  *added source array to the build-$pkgname.sh script, no more hardcoded $pkgver in source
+	  *minor modification in slkbuild.8 manpage
+- v1.1.1 (August 25, 2007)
+          *Initial release, fork of slkbuild 1.1.0 by Matthew Bruenig <matthewbruenig@gmail.com>
+          *Copy source files that don't contain a URL
+          *Added 2>&1 to the call of build-$pkgname.sh when using -x to make the standard error (file descriptor 2) go to the same place as the standard output (fd1).
+          *Added documentation files CHANGELOG COPYING INSTALL README
+          *Uploaded to server.
