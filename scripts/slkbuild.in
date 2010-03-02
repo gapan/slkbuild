@@ -406,7 +406,7 @@ prepare_directory() {
 		fi
 		cp -LR \$file \$startdir/src
 		if ! [ "\$protocol" = "http" -o "\$protocol" = "https" -o "\$protocol" = "ftp" ]; then
-			if ! [[ $NOSRCPACK -eq 1 ]]; then
+			if ! [[ \$NOSRCPACK -eq 1 ]]; then
 				cp -LR \$startdir/\$(basename \$SOURCES) \$startdir/pkg/usr/src/\$pkgname-\$pkgver/
 			fi
 		fi

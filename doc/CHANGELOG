@@ -1,6 +1,7 @@
 - v0.6.4 
 	  * Dereference symlinks when copying source files to /usr/src
 	  * Corrected some typos in the SLKBUILD man page.
+	  * Fixed 'nosrcpack' option
 
 - v0.6.3 (January 14, 2010)
 	  * Added support for $SLKCFLAGS. It is set equal to $CFLAGS.
