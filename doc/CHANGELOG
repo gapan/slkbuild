@@ -19,7 +19,7 @@
 	  * Fixed setting LIBDIRSUFFIX correctly
 
 - v0.6 (November 26, 2009)
-          * Added option to user #Packager: instead of #Maintainer heading in SLKBUILD
+          * Added option to use #Packager: instead of #Maintainer heading in SLKBUILD
 	  * Added 'nosrcpack' option to SLKBUILD
 
 - v0.5 (August 2, 2009)
