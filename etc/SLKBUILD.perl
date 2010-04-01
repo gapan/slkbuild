@@ -5,8 +5,7 @@
 pkgname=
 pkgver=
 pkgrel=
-#arch is usually one of x86_64/i486/i686/noarch
-arch=i486
+#arch=noarch
 source=()
 #sourcetemplate=http://people.salixos.org/yournick/$pkgname/$pkgver/
 #docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
