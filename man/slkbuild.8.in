@@ -28,7 +28,7 @@ Does everything that running it with no arguments would but afterwards actually 
 Creates a build-$pkgname.sh script that, when it is run, will remove the pkg and src directories after building the package.
 .TP
 .B slkbuild \-X, --x-and-clean
-Same behaviour as -x and -c combined together. Deletes the build-$pkgname.sh script after executing it to create the package.
+Same behaviour as -x and -c combined together. It additionally deletes the build-$pkgname.sh script, after executing it to create the package.
 .TP
 .B slkbuild \-h, --help
 Displays a help dialog.

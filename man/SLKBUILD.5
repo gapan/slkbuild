@@ -28,7 +28,7 @@ This is the function that is executed which actually does all the compiling. Bef
 .SH "OPTIONAL VARIABLES AND FUNCTIONS"
 .TP 
 .B arch
-The architecture of the build. You usually don't need to set this yourself, unless you want to create a "noarch" package. For 32-bit architectures, it will be automatically set to "i486" if not explicitly specified otherwise. For 64-bit architectures it will be automatically set to "x86_64". For AM architectures it will be automatically set to "arm". This will automatically set the correct CFLAGS and CXXFLAGS in any case, "-O2 -march=$arch -mtune=i686" for 32-bits, "-O2 -fPIC" for 64-bits and "-O2" for arm respectively. See also CFLAGS / CXXFLAGS below.
+The architecture of the build. You usually don't need to set this yourself, unless you want to create a "noarch" package. For 32-bit architectures, it will be automatically set to "i486" if not explicitly specified otherwise. For 64-bit architectures it will be automatically set to "x86_64". For ARM architectures it will be automatically set to "arm". This will automatically set the correct CFLAGS and CXXFLAGS in any case, "-O2 -march=$arch -mtune=i686" for 32-bits, "-O2 -fPIC" for 64-bits and "-O2" for arm respectively. See also CFLAGS / CXXFLAGS below.
 .TP 
 .B docs
 This is used in almost every package, but might possibly not be used. You fill in whatever documentation that comes with the package, docs=("AUTHORS" "LICENSE" "Changelog") into this variable and they will be moved over appropriately during the build to be included in the package. Don't worry about specifiying any path or the case of the docs because slkbuild does a case insensitive recursive search for whatever you provide. If you have more than one, do like I did above or like you do in source and put each doc in quotes with a space between them.
@@ -46,15 +46,15 @@ A homepage or some other information url about the software.
 These are generally configuration files that you don't want to overwrite during install because they will mess up any configuration that the user installing the package already had setup. You put the path that they will be on the filesystem. So let's say you don't want /etc/foo.conf to be overwritten and you are packaging a new version of software foo. You put dotnew=('etc/foo.conf') and that file in the package (in $startdir/pkg) will get moved to foo.conf.new and a test will be put in the doint.sh (script that runs after install) to see whether or not to move it over.
 .TP 
 .B CFLAGS / CXXFLAGS
-The script already assigned the FLAGS as \-O2 \-march=$arch \-mtune=i686, where $arch is what you provide in the arch variable mentioned above. If for some reason those aren't the ones that you want, you can override them using these variables. If $arch is set to "x64_64", FLAGS are set to \-O2 \-fPIC.
+The script already assigned appropriate flags for the project according the the specified architecture (see "arch" above) If for some reason those aren't the ones that you want, you can override them using these variables.
 .TP 
 .B doinst()
 This is the script that runs after a package is installed, so put any commands in here that you wan't to be run after the package is installed.
 
 .SH "AUTHOR"
-Matthew Bruenig <matthewbruenig@gmail.com>. 
+George Vlahavas <vlahavas~at~gmail~dot~com>.
 
-Adapted for SLKBUILD by George Vlahavas <vlahavas~at~gmail~dot~com>
+Originally written for buildpkg by Matthew Bruenig <matthewbruenig@gmail.com>. 
 
 .SH "SEE ALSO"
 .BR slkbuild(8)
