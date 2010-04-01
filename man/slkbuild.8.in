@@ -1,4 +1,4 @@
-.TH slkbuild 8 "January 19, 2010" "slkbuild"
+.TH slkbuild 8 "April 01, 2010" "slkbuild"
 .SH NAME
 slkbuild - automated build script creation tool
 
@@ -28,7 +28,7 @@ Does everything that running it with no arguments would but afterwards actually 
 Creates a build-$pkgname.sh script that, when it is run, will remove the pkg and src directories after building the package.
 .TP
 .B slkbuild \-X, --x-and-clean
-Same behaviour as -x and -c combined together
+Same behaviour as -x and -c combined together. Deletes the build-$pkgname.sh script after executing it to create the package.
 .TP
 .B slkbuild \-h, --help
 Displays a help dialog.

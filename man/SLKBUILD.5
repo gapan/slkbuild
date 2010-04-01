@@ -1,4 +1,4 @@
-.TH "SLKBUILD" "5" "January 25, 2010" "slkbuild" ""
+.TH "SLKBUILD" "5" "April 01, 2010" "slkbuild" ""
 .SH "NAME"
 SLKBUILD \- slkbuild meta\-file
 
@@ -16,9 +16,6 @@ The version of the software. No dashes or underscores are allowed, just numbers 
 .B pkgrel
 This is the release number of the package. A release number is the number of times this package has been created for this particular pkgver. So the first time you package a piece of software at a particular version, it is pkgrel 1, if you package it again at that exact same version perhaps to use different compile options or some other reason, it is pkgrel 2. However, if the package version changes, you go back to 1. So for example, software foo is at version 1.0 and is packaged, so that is pkgrel 1. It is packaged again at version 1.0 because of bad CXXFLAGS, that one is called pkgrel 2. If the software advances to 2.0, and you package that, the pkgrel goes back to 1, and doesn't advance to 3. It's customary to append the packagers initials to the package release number when building packages that are not official Slackware packages, e.g. "1gv".
 .TP 
-.B arch
-The architecture of the build. For 32-bit architectures, it will generally be i486 or noarch, but on occasion can be i686. If you aren't sure, go with i486. If you want to compile for a 64-bit architecture, 	set arch to x86_64. This will set the correct CFLAGS and CXXFLAGS in any case, "-O2 -march=$arch -mtune=i686" for 32-bits and "-O2 -fPIC" for 64-bits respectively.
-.TP 
 .B source
 This is an array for the source files needed to complete the build. This can be anything from a url to a tarball to a local personally created patch or .desktop file. If you have more than one, just put each one in quotes and make sure there is a space between them and make sure they are inside the parentheses. E.g. source=("http://url.tar.gz" "gcc.path" "thing.desktop"). For cvs, svn and git builds, this variable is not technically necessary, you can leave it empty and fetch the svn or cvs source in build(). Or you can create a source tarball from cvs, svn or git and use that in the source array.
 .TP 
@@ -29,6 +26,9 @@ This is an array where you put the description of the software you are packaging
 This is the function that is executed which actually does all the compiling. Before this function is ran, the path to the current directory is assigned the variable $startdir and then $startdir/src is created. After that anything specified in the source=() array is copied into $startdir/src and all tarballs are untarred. After that $startdir/pkg is created. Then this function is run. So the aim of this function is to put whatever commands that are necessary, be it ./configure, make, make install DESTDIR=$startdir/pkg, or any other combination of commands, to setup $startdir/pkg correctly. $startdir/pkg needs to be setup as if it is the / and so everything underneath goes where it is supposed to. If for instance, you are packaging something that you want to go in /usr/bin/foo, you would make sure it got to $startdir/pkg/usr/bin/foo in this function.
 
 .SH "OPTIONAL VARIABLES AND FUNCTIONS"
+.TP 
+.B arch
+The architecture of the build. You usually don't need to set this yourself, unless you want to create a "noarch" package. For 32-bit architectures, it will be automatically set to "i486" if not explicitly specified otherwise. For 64-bit architectures it will be automatically set to "x86_64". For AM architectures it will be automatically set to "arm". This will automatically set the correct CFLAGS and CXXFLAGS in any case, "-O2 -march=$arch -mtune=i686" for 32-bits, "-O2 -fPIC" for 64-bits and "-O2" for arm respectively. See also CFLAGS / CXXFLAGS below.
 .TP 
 .B docs
 This is used in almost every package, but might possibly not be used. You fill in whatever documentation that comes with the package, docs=("AUTHORS" "LICENSE" "Changelog") into this variable and they will be moved over appropriately during the build to be included in the package. Don't worry about specifiying any path or the case of the docs because slkbuild does a case insensitive recursive search for whatever you provide. If you have more than one, do like I did above or like you do in source and put each doc in quotes with a space between them.
