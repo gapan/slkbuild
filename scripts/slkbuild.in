@@ -354,7 +354,6 @@ set_post_permissions() {
 
 copy_build_script() {
 	mkdir -p $startdir/pkg/usr/src/$pkgname-$pkgver/
-	cp $startdir/build-$pkgname.sh $startdir/pkg/usr/src/$pkgname-$pkgver/build-$pkgname.sh
 	[ -f $startdir/SLKBUILD ] && cp $startdir/SLKBUILD	$startdir/pkg/usr/src/$pkgname-$pkgver/SLKBUILD
 }
 
@@ -750,4 +749,7 @@ chmod +x $startdir/build-$pkgname.sh
 echo "build-$pkgname.sh has been created"
 if [ "$EXECUTE" == "1" ]; then
 	./build-$pkgname.sh 2>&1 | tee build-$pkgname-$pkgver-$arch-$pkgrel.log
+	if [ "$REMOVEDIRS" == "1" ];then
+		rm ./build-$pkgname.sh
+	fi
 fi
