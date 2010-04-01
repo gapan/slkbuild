@@ -1,3 +1,6 @@
+- v0.7.0
+	  * Automatically set the arch if it is not explicitly set in SLKBUILD
+
 - v0.6.4 
 	  * Dereference symlinks when copying source files to /usr/src
 	  * Corrected some typos in the SLKBUILD man page.

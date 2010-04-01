@@ -132,10 +132,19 @@ fi
 
 ##################Sanity Tests Begin######################################
 #Check that variables exist
-for VAR in pkgname pkgver pkgrel arch slackdesc; do
+for VAR in pkgname pkgver pkgrel slackdesc; do
 	[[ ! "${!VAR}" ]] &&
 		err "variable \"${VAR}\" is not set"
 done
+
+if [ -z "$arch" ]; then
+	case "$( uname -m )" in
+		i?86) export arch=i486 ;;
+		arm*) export arch=arm ;;
+		*) export arch=$( uname -m ) ;;
+	esac
+	echo "Automatically setting arch to $arch"
+fi
 
 #special source check
 if [[ ! "$source" ]]; then
