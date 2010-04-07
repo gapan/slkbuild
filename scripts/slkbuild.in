@@ -394,6 +394,7 @@ EOREDUNDANT2
 if [[ "$source" ]]; then
 cat <<EOPREPAREDIRECTORY >>$startdir/build-$pkgname.sh
 prepare_directory() {
+	NOSRCPACK="$NOSRCPACK"
 	mkdir \$startdir/src
 	mkdir -p \$startdir/pkg/usr/src/\$pkgname-\$pkgver
 	for SOURCES in \${source[@]}; do
