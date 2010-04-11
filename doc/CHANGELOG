@@ -1,3 +1,6 @@
+- v0.7.2
+	  * Don't include the build-$pkgname.sh script in the .src file
+
 - v0.7.1
 	  * Fixed not including the source when the 'nosrcpack' option was set
 
