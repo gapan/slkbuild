@@ -123,7 +123,7 @@ while [ $# -gt 0 ]; do
 	shift
 done
 if [ -f "${startdir}/SLKBUILD" ]; then
-	unset pkgname pkgver pkgrel arch source extradepends options
+	unset pkgname pkgver pkgrel source extradepends options
 	unset dotnew url CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX slackdesc doinst build docs sourcetemplate
 	. ${startdir}/SLKBUILD
 else
