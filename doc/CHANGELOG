@@ -1,3 +1,10 @@
+- v0.8.0  * Properly support the arm architecture. Fixes for setting the
+            correct build flags for other architectures.
+
+- v0.7.3
+	  * Make it possible to set the arch to use from the command
+	    line, for example you can now run: arch=i686 slkbuild -X
+
 - v0.7.2
 	  * Don't include the build-$pkgname.sh script in the .src file
 
