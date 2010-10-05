@@ -1,3 +1,6 @@
+- v0.8.2  * If 'tgz', 'tbz' or 'tlz' were listed first in the options,
+            all other options were not actually used.
+
 - v0.8.1  * Do not return exit code 0, when failing to build the package
 
 - v0.8.0  * Properly support the arm architecture. Fixes for setting the
