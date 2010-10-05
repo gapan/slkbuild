@@ -241,19 +241,22 @@ if [ -n "$options" ]; then
 				NOAUTODOTNEW='1'
 				;;
 			tgz)
-				echo "Setting package type: tgz"
-				PKGEXT="tgz"
-				break
+				if [ x$PKGEXT = x"" ]; then
+					echo "Setting package type: tgz"
+					PKGEXT="tgz"
+				fi
 				;;
 			tlz)
-				echo "Setting package type: tlz"
-				PKGEXT="tlz"
-				break
+				if [ x$PKGEXT = x"" ]; then
+					echo "Setting package type: tlz"
+					PKGEXT="tlz"
+				fi
 				;;
 			tbz)
-				echo "Setting package type: tbz"
-				PKGEXT="tbz"
-				break
+				if [ x$PKGEXT = x"" ]; then
+					echo "Setting package type: tbz"
+					PKGEXT="tbz"
+				fi
 				;;
 			*)
 				echo "$opts is not a correct option, exiting."
