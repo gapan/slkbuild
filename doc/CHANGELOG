@@ -1,3 +1,5 @@
+- v0.8.1  * Do not return exit code 0, when failing to build the package
+
 - v0.8.0  * Properly support the arm architecture. Fixes for setting the
             correct build flags for other architectures.
 

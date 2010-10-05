@@ -759,7 +759,11 @@ chmod +x $startdir/build-$pkgname.sh
 echo "build-$pkgname.sh has been created"
 if [ "$EXECUTE" == "1" ]; then
 	./build-$pkgname.sh 2>&1 | tee build-$pkgname-$pkgver-$arch-$pkgrel.log
+	retval=${PIPESTATUS[0]}
 	if [ "$REMOVEDIRS" == "1" ];then
 		rm ./build-$pkgname.sh
 	fi
 fi
+
+exit $retval
+
