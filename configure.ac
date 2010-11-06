@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(slkbuild, 0.8.1, vlahavas~at~gmail~dot~com)
-AM_INIT_AUTOMAKE(slkbuild, 0.8.1)
+AC_INIT(slkbuild, 0.8.3, vlahavas~at~gmail~dot~com)
+AM_INIT_AUTOMAKE(slkbuild, 0.8.3)
 AC_OUTPUT(Makefile doc/Makefile man/Makefile etc/Makefile scripts/Makefile)
 
 # Checks for programs.
