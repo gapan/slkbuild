@@ -673,6 +673,7 @@ pkgname=$pkgname
 pkgver=$pkgver
 pkgrel=$pkgrel
 arch=$arch
+numjobs=${numjobs:-1}
 package=\$pkgname-\$pkgver-\$arch-$pkgrel
 EOVARIABLES
 
