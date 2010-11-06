@@ -1,3 +1,6 @@
+- v0.8.3  * Add support for using the $numjobs environment variable and
+            use it as the default number of jobs when running make.
+
 - v0.8.2  * If 'tgz', 'tbz' or 'tlz' were listed first in the options,
             all other options were not actually used.
 
