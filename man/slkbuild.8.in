@@ -1,4 +1,4 @@
-.TH slkbuild 8 "April 01, 2010" "slkbuild"
+.TH slkbuild 8 "November 06, 2010" "slkbuild"
 .SH NAME
 slkbuild - automated build script creation tool
 
@@ -35,6 +35,21 @@ Displays a help dialog.
 .TP
 .B slkbuild \-v, --version
 Outputs the slkbuild version.
+.
+.
+.SH ENVIRONMENT VARIABLES
+When executed, slkbuild will look for the following environment variables. If they have been specified, they will be used for creating the package.
+.TP
+.B arch
+This will set the arch used for building the package. See also
+.BR SLKBUILD(5)
+.TP
+.B ARCH
+Same effect as
+.BR arch
+.TP
+.B numjobs
+This will set the number of jobs used by make in the build() function of the SLKBUILD file. If not specified, the default value is 1.
 .
 .
 .SH AUTHORS

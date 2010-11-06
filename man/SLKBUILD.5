@@ -1,4 +1,4 @@
-.TH "SLKBUILD" "5" "April 01, 2010" "slkbuild" ""
+.TH "SLKBUILD" "5" "November 06, 2010" "slkbuild" ""
 .SH "NAME"
 SLKBUILD \- slkbuild meta\-file
 
@@ -23,7 +23,22 @@ This is an array for the source files needed to complete the build. This can be 
 This is an array where you put the description of the software you are packaging. On the first line put the package name followed by a space a dash and another space and then a short description. On the following 1\-9 lines dependending on how much you need, put a longer explanation. Enclose each line in quotes and make sure each line is under 70 characters, which can be ensured by following the handy ruler provided in the SLKBUILD prototype created by makepkg \-\-generate. For those used to skipping the second line of the slackdesc, the script does that automatically so go straight into the long explanation in the second line.
 .TP 
 .B build()
-This is the function that is executed which actually does all the compiling. Before this function is ran, the path to the current directory is assigned the variable $startdir and then $startdir/src is created. After that anything specified in the source=() array is copied into $startdir/src and all tarballs are untarred. After that $startdir/pkg is created. Then this function is run. So the aim of this function is to put whatever commands that are necessary, be it ./configure, make, make install DESTDIR=$startdir/pkg, or any other combination of commands, to setup $startdir/pkg correctly. $startdir/pkg needs to be setup as if it is the / and so everything underneath goes where it is supposed to. If for instance, you are packaging something that you want to go in /usr/bin/foo, you would make sure it got to $startdir/pkg/usr/bin/foo in this function.
+This is the function that is executed which actually does all the
+compiling. Before this function is ran, the path to the current
+directory is assigned the variable $startdir and then $startdir/src is
+created. After that anything specified in the source=() array is copied
+into $startdir/src and all tarballs are untarred. After that
+$startdir/pkg is created. Then this function is run. So the aim of this
+function is to put whatever commands that are necessary, be it
+./configure, make, make install DESTDIR=$startdir/pkg, or any other
+combination of commands, to setup $startdir/pkg correctly. $startdir/pkg
+needs to be setup as if it is the / and so everything underneath goes
+where it is supposed to. If for instance, you are packaging something
+that you want to go in /usr/bin/foo, you would make sure it got to
+$startdir/pkg/usr/bin/foo in this function. The environment variable
+.BR numjobs
+is used in build() to specify the default number of jobs make is going
+to use if "make -j $numjobs" is specified in build().
 
 .SH "OPTIONAL VARIABLES AND FUNCTIONS"
 .TP 
