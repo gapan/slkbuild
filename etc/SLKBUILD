@@ -29,6 +29,6 @@ slackdesc=\
 build() {
 	cd $startdir/src/$pkgname-$pkgver
 	./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --localstatedir=/var --sysconfdir=/etc --build=$arch-slackware-linux
-	make || return 1
+	make -j $numjobs || return 1
 	make install DESTDIR=$startdir/pkg
 } 
