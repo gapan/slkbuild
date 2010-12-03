@@ -1,0 +1,34 @@
+#Packager: Name <email@address.com>
+#Former Packager(s): Name <email@address.com>
+#Anything commented out is optional and can be deleted.
+
+pkgname=
+pkgver=
+pkgrel=
+#arch=noarch
+source=()
+#sourcetemplate=http://people.salixos.org/yournick/$pkgname/$pkgver/
+#docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+#url=
+#dotnew=()
+#CFLAGS=
+#CXXFLAGS=
+#options=('noextract')
+
+#doinst() {
+#
+#}
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+""
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	./waf configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --localstatedir=/var --sysconfdir=/etc
+	./waf build -j $numjobs || return 1
+	./waf install --destdir=$startdir/pkg
+} 
