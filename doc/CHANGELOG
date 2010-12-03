@@ -1,3 +1,7 @@
+- v0.8.4  * Added --no-check-certificate to wget options to handle https
+            files properly
+	  * Added a template SLKBUILD for waf
+
 - v0.8.3  * Add support for using the $numjobs environment variable and
             use it as the default number of jobs when running make.
 
