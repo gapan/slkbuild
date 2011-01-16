@@ -363,7 +363,7 @@ copy_build_script() {
 create_package() {
 	ls -lR $startdir/pkg
 	cd $startdir/pkg
-	/sbin/makepkg -l y -c n $startdir/$package.txz
+	/sbin/makepkg -p -l y -c n $startdir/$package.txz
 	cd $startdir
 	md5sum $package.txz > $startdir/$package.md5
 }
