@@ -222,6 +222,7 @@ if [ -n "$options" ]; then
 	unset NOSTRIP
 	unset NOAUTODOTNEW
 	unset PKGEXT
+	unset NOLINKPREPEND
 	for opts in ${options[@]}; do
 		case $opts in
 			nosrcpack)
@@ -239,6 +240,10 @@ if [ -n "$options" ]; then
 			noautodotnew)
 				echo "Setting option noautodotnew"
 				NOAUTODOTNEW='1'
+				;;
+			nolinkprepend)
+				echo "Setting option nolinkprepend"
+				NOLINKPREPEND='1'
 				;;
 			tgz)
 				if [ x$PKGEXT = x"" ]; then
@@ -374,6 +379,10 @@ if [ -n "$PKGEXT" ]; then
 	sed -i "s/txz/$PKGEXT/" $startdir/build-$pkgname.sh
 else
 	PKGEXT="txz"
+fi
+
+if [ -n "$NOLINKPREPEND" ]; then
+	sed -i "s/makepkg -p/makepkg/" $startdir/build-$pkgname.sh
 fi
 
 if [ -z "$NOSTRIP" ]; then
