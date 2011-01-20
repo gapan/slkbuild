@@ -1,3 +1,8 @@
+- v0.8.5  * makepkg is run with the -p option by default to create any
+            symlinks before running anything else in the doinst script.
+	  * A 'nolinkprepend' option has been added to SLKBUILD to
+	    disable the usage of the -p option with makepkg.
+
 - v0.8.4  * Added --no-check-certificate to wget options to handle https
             files properly
 	  * Added a template SLKBUILD for waf
