@@ -470,6 +470,8 @@ extract_source() {
 					cmd="xz -d -f" ;;
 				*application/x-lzma*)
 					cmd="lzma -d -f" ;;
+				*application/x-rar*)
+					cmd="unrar x" ;;
 			esac
 			if [ "\$cmd" != "" ]; then
 				echo "\$cmd \$FILES"

@@ -1,3 +1,5 @@
+- v0.8.6  * Added support for extracting rar source archives.
+
 - v0.8.5  * makepkg is run with the -p option by default to create any
             symlinks before running anything else in the doinst script.
 	  * A 'nolinkprepend' option has been added to SLKBUILD to
