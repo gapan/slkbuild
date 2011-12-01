@@ -13,7 +13,7 @@ source=()
 #dotnew=()
 #CFLAGS=
 #CXXFLAGS=
-#options=('noextract')
+options=('noautodotnew')
 
 #doinst() {
 #
