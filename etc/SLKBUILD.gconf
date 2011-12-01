@@ -1,0 +1,54 @@
+#Packager: Name <email@address.com>
+#Former Packager(s): Name <email@address.com>
+#Anything commented out is optional and can be deleted.
+
+pkgname=
+pkgver=
+pkgrel=
+#arch=noarch
+source=()
+#sourcetemplate=http://people.salixos.org/yournick/$pkgname/$pkgver/
+#docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+#url=
+#dotnew=()
+#CFLAGS=
+#CXXFLAGS=
+#options=('noextract')
+
+#doinst() {
+#
+#}
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+""
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	./configure \
+		--prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--disable-schemas-install \
+		--with-gconf-source="xml::/etc/gconf/gconf.xml.defaults" \
+		--build=$arch-slackware-linux
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+
+	# Install gconf schemas in the package
+        export GCONF_CONFIG_SOURCE="xml::$startdir/pkg/etc/gconf/gconf.xml.defaults"
+        if [ -d $startdir/pkg/etc/gconf/schemas ]; then
+            install -v -d -m755 $startdir/pkg/etc/gconf/gconf.xml.defaults
+            SCHEMAS=$startdir/pkg/etc/gconf/schemas
+            for schema in $SCHEMAS/*.schemas; do
+                gconftool-2 --makefile-install-rule $schema
+            done
+            # Reset / Verify correct permissions
+            ( cd $startdir/pkg/etc/gconf ; find . -type d -exec chmod 755 {} \; )
+            ( cd $startdir/pkg/etc/gconf ; find . -type f -exec chmod 644 {} \; )
+        fi
+} 
