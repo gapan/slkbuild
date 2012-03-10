@@ -714,8 +714,8 @@ elif [ $arch == "i486" ] || [ $arch == "i586" ]; then
 	SLKCFLAGS=${CFLAGS}
 	LIBDIRSUFFIX=""
 elif [ $arch == "arm" ]; then
-	CFLAGS=${CFLAGS:-"-O2 -march=armv4t"}
-	CXXFLAGS=${CFLAGS:-"-O2 -march=armv4t"}
+	CFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
+	CXXFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
 	SLKCFLAGS=${CFLAGS}
 	LIBDIRSUFFIX=""
 else
