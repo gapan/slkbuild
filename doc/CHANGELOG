@@ -1,28 +1,36 @@
-- v0.8.7  * Added a template SLKBUILD for packages that need gconf schemas
+- v0.8.7  
+          * Added a template SLKBUILD for packages that need gconf schemas
             registration
           * "-march=armv5te" is used as the default when setting
 	    arch=arm.
 
-- v0.8.6  * Added support for extracting rar source archives.
+- v0.8.6  
+          * Added support for extracting rar source archives.
 
-- v0.8.5  * makepkg is run with the -p option by default to create any
+- v0.8.5  
+          * makepkg is run with the -p option by default to create any
             symlinks before running anything else in the doinst script.
 	  * A 'nolinkprepend' option has been added to SLKBUILD to
 	    disable the usage of the -p option with makepkg.
 
-- v0.8.4  * Added --no-check-certificate to wget options to handle https
+- v0.8.4  
+          * Added --no-check-certificate to wget options to handle https
             files properly
 	  * Added a template SLKBUILD for waf
 
-- v0.8.3  * Add support for using the $numjobs environment variable and
+- v0.8.3  
+          * Add support for using the $numjobs environment variable and
             use it as the default number of jobs when running make.
 
-- v0.8.2  * If 'tgz', 'tbz' or 'tlz' were listed first in the options,
+- v0.8.2  
+          * If 'tgz', 'tbz' or 'tlz' were listed first in the options,
             all other options were not actually used.
 
-- v0.8.1  * Do not return exit code 0, when failing to build the package
+- v0.8.1  
+          * Do not return exit code 0, when failing to build the package
 
-- v0.8.0  * Properly support the arm architecture. Fixes for setting the
+- v0.8.0  
+          * Properly support the arm architecture. Fixes for setting the
             correct build flags for other architectures.
 
 - v0.7.3
@@ -98,13 +106,13 @@ ChangeLog below this part refers to buildpkg:
 	  * delete directory usr/doc/$pkgname-$pkgver if empty
 	  * delete zero length files in usr/doc/$pkgname-$pkgver
 	  * check it is needed to add code to handle info pages, this one does two checks, if the usr/info directory exists and if install-info is in the doinst.sh before adding the necessary code.
-	  * add code to handle all file in etc to be handled by dotnew, if no dotnew is specified in the SLKBUILD and the etc directory exists.
+	  * add code to handle all file in etc to be handled by dotnew, if no dotnew is specified in the ZENBUILD and the etc directory exists.
 	  * remove the usr/info/dir file if present
 	  * added a "ls -lR $startdir/pkg" to create_package so that all files permissions and ownerships would be appended in the log file, suggestion by George Vlahavas
 - v1.5.0 (June 7, 2008)
-	  * added creation of package.src file from template from SLKBUILD sourcetemplate variable
+	  * added creation of package.src file from template from ZENBUILD sourcetemplate variable
 - v1.4.3 (February 23, 2008)
-	  * added -z or --zen-pkgcheck option to use zen-pkgcheck to check for rules complainces (only if run through slkbuild, it is not done in the generated buildscript)
+	  * added -z or --zen-pkgcheck option to use zen-pkgcheck to check for rules complainces (only if run through buildpkg, it is not done in the generated buildscript)
 - v1.4.2 (December 08, 2007)
 	  *changes in buildfile creation naming, now it's build-$pkgname-$pkgver-$zenver.$pkgrel.log, thanks to George Vlahavas for the suggestion
 	  *changes in script processing, from sh to bash, thanks to Matthew Bruenig the suggestion
@@ -148,19 +156,19 @@ ChangeLog below this part refers to buildpkg:
 	  *added -X option, that combines -x and -c option, thanks to Paolo Sanchini for the suggestion
 	  *added support to fix symlinks in man pages, example view.1->vim.1 vim.1 is gziped, so broken symlink, this will fix it, thanks to Paolo Sanchini for the suggestion
 - v1.2.5 (October 09, 2007)
-	  *refix to "also include the SLKBUILD along with the buildscripts in the package", added in v1.2.3
+	  *refix to "also include the ZENBUILD along with the buildscripts in the package", added in v1.2.3
 	  *if two or more variables are commented, display a warning message
 - v1.2.4 (October 08, 2007)
 	  *fix error in handling of check_for_menu_complaince, if a directory with the same name of the icon exists it will also be moved, this should not happen
 	  *added option -c or --clean-dirs to clean the dirs pkg and src
 - v1.2.3 (September 29, 2007)
-	  *also include the SLKBUILD along with the buildscripts in the package
+	  *also include the ZENBUILD along with the buildscripts in the package
 	  *added REQUIREDBUILDERFLATDEPS option
 - v1.2.2 (September 08, 2007)
 	  *fixed some typos
-	  *fixed broken SLKBUILD, if no source array was defined it would not build, this has being fixed, this bug was introduced when added the feature: "added source array to the build-$pkgname.sh script, no more hardcoded $pkgver in source"
+	  *fixed broken ZENBUILD, if no source array was defined it would not build, this has being fixed, this bug was introduced when added the feature: "added source array to the build-$pkgname.sh script, no more hardcoded $pkgver in source"
 - v1.2.1 (August 29, 2007)
-	  *Change warning message if no Maintainer is set in SLKBUILD
+	  *Change warning message if no Maintainer is set in ZENBUILD
 	  *put all _*= in the buildscript, as temporary variables for svn, cvs or problematic version variables
 	  *added NOREQUIREDBUILDER option, sometimes requiredbuilder take way to long to detect deps, when rebuilding this can save time...
 - v1.2.0 (August 26, 2007)
@@ -169,13 +177,13 @@ ChangeLog below this part refers to buildpkg:
 	  *add support for tgz and zip extraction
 	  *change to only parse source array to extract files, instead of all files present
 	  *change in CFLAGS/CXXFLAGS, no "if", faster parsing
-	  *add support for #Former Maintainer(s) in SLKBUILD
-	  *don't build if #Maintainer: Name <email@address.com> is set in SLKBUILD
+	  *add support for #Former Maintainer(s) in ZENBUILD
+	  *don't build if #Maintainer: Name <email@address.com> is set in ZENBUILD
 	  *Added AUTHORS and TODO to the documentation
 	  *added source array to the build-$pkgname.sh script, no more hardcoded $pkgver in source
-	  *minor modification in slkbuild.8 manpage
+	  *minor modification in buildpkg.8 manpage
 - v1.1.1 (August 25, 2007)
-          *Initial release, fork of slkbuild 1.1.0 by Matthew Bruenig <matthewbruenig@gmail.com>
+          *Initial release, fork of buildpkg 1.1.0 by Matthew Bruenig <matthewbruenig@gmail.com>
           *Copy source files that don't contain a URL
           *Added 2>&1 to the call of build-$pkgname.sh when using -x to make the standard error (file descriptor 2) go to the same place as the standard output (fd1).
           *Added documentation files CHANGELOG COPYING INSTALL README
