@@ -1,4 +1,6 @@
 - v0.8.7  
+          * Added a template SLKBUILD for packages that need mateconf
+	    schemas registration
           * Added a template SLKBUILD for packages that need gconf schemas
             registration
           * "-march=armv5te" is used as the default when setting
