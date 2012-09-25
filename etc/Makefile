@@ -114,7 +114,7 @@ sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 sysconfdir = ${prefix}/etc
 target_alias = 
-sysconf_DATA = SLKBUILD SLKBUILD.python SLKBUILD.perl SLKBUILD.waf
+sysconf_DATA = SLKBUILD SLKBUILD.gconf SLKBUILD.mateconf SLKBUILD.perl SLKBUILD.python SLKBUILD.waf
 EXTRA_DIST = ${sysconf_DATA}
 all: all-am
 
