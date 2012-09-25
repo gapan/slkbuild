@@ -1,8 +1,13 @@
+- v0.9.0
+          * Fix a typo in the download command
+
 - v0.8.9
           * Add gconf and mateconf SLKBUILD template in Makefiles
+
 - v0.8.8
           * Modify URL if it contains an = sign
 	  * Remove partially downloaded file if download has failed
+
 - v0.8.7  
           * Added a template SLKBUILD for packages that need mateconf
 	    schemas registration
