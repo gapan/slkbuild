@@ -1,3 +1,6 @@
+- v0.8.8
+          * Modify URL if it contains an = sign
+	  * Remove partially downloaded file if download has failed
 - v0.8.7  
           * Added a template SLKBUILD for packages that need mateconf
 	    schemas registration
