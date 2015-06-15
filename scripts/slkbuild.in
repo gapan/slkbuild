@@ -139,7 +139,7 @@ done
 
 if [ -z "$arch" ]; then
 	case "$( uname -m )" in
-		i?86) export arch=i486 ;;
+		i?86) export arch=i586 ;;
 		arm*) export arch=arm ;;
 		*) export arch=$( uname -m ) ;;
 	esac
