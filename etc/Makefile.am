@@ -1,2 +1,0 @@
-sysconf_DATA = SLKBUILD SLKBUILD.gconf SLKBUILD.mateconf SLKBUILD.perl SLKBUILD.python SLKBUILD.waf
-EXTRA_DIST = ${sysconf_DATA}
