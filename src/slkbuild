@@ -81,6 +81,9 @@ MAKEPKG=${MAKEPKG:-"/sbin/makepkg"}
 #Set the default package format to .txz
 PKGEXT=txz
 
+#Use link prepending by default
+LINKPREPEND="-p"
+
 SHORTOPTS="hXxg::cv"
 LONGOPTS="help,version,x-and-clean,execute,generate::,clean-dirs"
 # Note that we use `"$@"' to let each command-line parameter expand to a
@@ -229,7 +232,6 @@ if [ -n "$options" ]; then
 	unset NOEXTRACT
 	unset NOSTRIP
 	unset NOAUTODOTNEW
-	unset NOLINKPREPEND
 	for opts in ${options[@]}; do
 		case $opts in
 			nosrcpack)
@@ -250,7 +252,7 @@ if [ -n "$options" ]; then
 				;;
 			nolinkprepend)
 				echo "Setting option nolinkprepend"
-				NOLINKPREPEND='1'
+				LINKPREPEND=''
 				;;
 			tgz)
 				echo "Setting package type: tgz"
@@ -286,6 +288,7 @@ fi
 
 cat <<"EOREDUNDANT" | \
 	sed "s|__MAKEPKG__|$MAKEPKG|g" | \
+	sed "s|__LINKPREPEND__|$LINKPREPEND|g" | \
 	sed "s|__PKGEXT__|$PKGEXT|g" \
 	>> $startdir/build-$pkgname.sh
 
@@ -372,16 +375,13 @@ copy_build_script() {
 create_package() {
 	ls -lR $startdir/pkg
 	cd $startdir/pkg
-	__MAKEPKG__ -p -l y -c n $startdir/$package.__PKGEXT__
+	__MAKEPKG__ __LINKPREPEND__ -l y -c n $startdir/$package.__PKGEXT__
 	cd $startdir
 	md5sum $package.__PKGEXT__ > $startdir/$package.md5
 }
 
 EOREDUNDANT
 
-if [ -n "$NOLINKPREPEND" ]; then
-	sed -i "s/makepkg -p/makepkg/" $startdir/build-$pkgname.sh
-fi
 
 if [ -z "$NOSTRIP" ]; then
 cat <<"EOREDUNDANT1" >> $startdir/build-$pkgname.sh
