@@ -74,6 +74,10 @@ unset EXECUTE
 unset GENERATE
 unset REMOVEDIRS
 unset ARG1 ARG2
+
+#Set to use the default makepkg in Slackware
+MAKEPKG=${MAKEPKG:-"/sbin/makepkg"}
+
 SHORTOPTS="hXxg::cv"
 LONGOPTS="help,version,x-and-clean,execute,generate::,clean-dirs"
 # Note that we use `"$@"' to let each command-line parameter expand to a
@@ -284,7 +288,9 @@ fi
 	grep -e "^#Former Maintainer(s)\|^#Former Packager(s)" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
 [[ "$url" ]] && echo "#url: $url" >> $startdir/build-$pkgname.sh
 
-cat <<"EOREDUNDANT" >> $startdir/build-$pkgname.sh
+cat <<"EOREDUNDANT" | \
+	sed "s|__MAKEPKG__|$MAKEPKG|g" \
+	>> $startdir/build-$pkgname.sh
 
 ######Begin Redundant Code######################################
 check_for_root() {
@@ -369,7 +375,7 @@ copy_build_script() {
 create_package() {
 	ls -lR $startdir/pkg
 	cd $startdir/pkg
-	/sbin/makepkg -p -l y -c n $startdir/$package.txz
+	__MAKEPKG__ -p -l y -c n $startdir/$package.txz
 	cd $startdir
 	md5sum $package.txz > $startdir/$package.md5
 }
