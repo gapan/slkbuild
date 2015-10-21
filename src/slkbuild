@@ -78,6 +78,9 @@ unset ARG1 ARG2
 #Set to use the default makepkg in Slackware
 MAKEPKG=${MAKEPKG:-"/sbin/makepkg"}
 
+#Set the default package format to .txz
+PKGEXT=txz
+
 SHORTOPTS="hXxg::cv"
 LONGOPTS="help,version,x-and-clean,execute,generate::,clean-dirs"
 # Note that we use `"$@"' to let each command-line parameter expand to a
@@ -226,7 +229,6 @@ if [ -n "$options" ]; then
 	unset NOEXTRACT
 	unset NOSTRIP
 	unset NOAUTODOTNEW
-	unset PKGEXT
 	unset NOLINKPREPEND
 	for opts in ${options[@]}; do
 		case $opts in
@@ -251,22 +253,16 @@ if [ -n "$options" ]; then
 				NOLINKPREPEND='1'
 				;;
 			tgz)
-				if [ x$PKGEXT = x"" ]; then
-					echo "Setting package type: tgz"
-					PKGEXT="tgz"
-				fi
+				echo "Setting package type: tgz"
+				PKGEXT="tgz"
 				;;
 			tlz)
-				if [ x$PKGEXT = x"" ]; then
-					echo "Setting package type: tlz"
-					PKGEXT="tlz"
-				fi
+				echo "Setting package type: tlz"
+				PKGEXT="tlz"
 				;;
 			tbz)
-				if [ x$PKGEXT = x"" ]; then
-					echo "Setting package type: tbz"
-					PKGEXT="tbz"
-				fi
+				echo "Setting package type: tbz"
+				PKGEXT="tbz"
 				;;
 			*)
 				echo "$opts is not a correct option, exiting."
@@ -289,7 +285,8 @@ fi
 [[ "$url" ]] && echo "#url: $url" >> $startdir/build-$pkgname.sh
 
 cat <<"EOREDUNDANT" | \
-	sed "s|__MAKEPKG__|$MAKEPKG|g" \
+	sed "s|__MAKEPKG__|$MAKEPKG|g" | \
+	sed "s|__PKGEXT__|$PKGEXT|g" \
 	>> $startdir/build-$pkgname.sh
 
 ######Begin Redundant Code######################################
@@ -375,18 +372,12 @@ copy_build_script() {
 create_package() {
 	ls -lR $startdir/pkg
 	cd $startdir/pkg
-	__MAKEPKG__ -p -l y -c n $startdir/$package.txz
+	__MAKEPKG__ -p -l y -c n $startdir/$package.__PKGEXT__
 	cd $startdir
-	md5sum $package.txz > $startdir/$package.md5
+	md5sum $package.__PKGEXT__ > $startdir/$package.md5
 }
 
 EOREDUNDANT
-
-if [ -n "$PKGEXT" ]; then
-	sed -i "s/txz/$PKGEXT/" $startdir/build-$pkgname.sh
-else
-	PKGEXT="txz"
-fi
 
 if [ -n "$NOLINKPREPEND" ]; then
 	sed -i "s/makepkg -p/makepkg/" $startdir/build-$pkgname.sh
