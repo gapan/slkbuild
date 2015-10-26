@@ -3,7 +3,7 @@ DESTDIR ?= /
 SYSCONFDIR ?= /etc
 
 all:
-	sed -i "s/@SYSCONFDIR@/$(SYSCONFDIR)/g" src/slkbuild
+	sed -i "s/@sysconfdir@/$(SYSCONFDIR)/g" src/slkbuild
 
 install:
 	install -Dm 755 src/slkbuild $(DESTDIR)/$(PREFIX)/bin/slkbuild
