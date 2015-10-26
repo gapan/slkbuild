@@ -2,8 +2,8 @@ PREFIX ?= /usr/local
 DESTDIR ?= /
 SYSCONFDIR ?= /etc
 
-nothing:
-	@echo "Nothing to make."
+all:
+	sed -i "s/@SYSCONFDIR@/$(SYSCONFDIR)/g" src/slkbuild
 
 install:
 	install -Dm 755 src/slkbuild $(DESTDIR)/$(PREFIX)/bin/slkbuild
@@ -12,4 +12,4 @@ install:
 	install -d -m 755 $(DESTDIR)/$(SYSCONFDIR)/slkbuild
 	install -m 644 etc/SLKBUILD* $(DESTDIR)/$(SYSCONFDIR)/slkbuild/
 
-.PHONY: nothing install
+.PHONY: all install
