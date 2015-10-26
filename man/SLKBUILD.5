@@ -29,8 +29,8 @@ directory is assigned the variable $startdir and then $startdir/src is
 created. After that anything specified in the source=() array is copied
 into $startdir/src and all tarballs are untarred. After that
 $startdir/pkg is created. Then this function is run. So the aim of this
-function is to put whatever commands that are necessary, be it
-./configure, make, make install DESTDIR=$startdir/pkg, or any other
+function is to put whatever commands that are necessary, be it ./configure,
+make, make install DESTDIR=$startdir/pkg, or any other
 combination of commands, to setup $startdir/pkg correctly. $startdir/pkg
 needs to be setup as if it is the / and so everything underneath goes
 where it is supposed to. If for instance, you are packaging something
