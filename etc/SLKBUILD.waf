@@ -28,7 +28,10 @@ slackdesc=\
 
 build() {
 	cd $startdir/src/$pkgname-$pkgver
-	./waf configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --localstatedir=/var --sysconfdir=/etc
+	./waf configure --prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--localstatedir=/var \
+		--sysconfdir=/etc
 	./waf build -j $numjobs || return 1
 	./waf install --destdir=$startdir/pkg
 } 
