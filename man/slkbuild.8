@@ -47,8 +47,19 @@ This will set the arch used for building the package. See also
 Same effect as
 .BR arch
 .TP
+.B MAKEPKG
+If set, points to an alternative
+.B makepkg
+executable.
+.TP
 .B numjobs
 This will set the number of jobs used by make in the build() function of the SLKBUILD file. If not specified, the default value is 1.
+.TP
+.B PKGEXT
+Sets the package type to use. Could be set to "txz", "tgz", "tlz", "tbz"
+or "tbr". This overrides any setting within the
+.BR SLKBUILD (5)
+meta-file.
 .
 .
 .SH AUTHORS
@@ -58,7 +69,7 @@ buildpkg was initially written by Matthew Bruenig <matthewbruenig@gmail.com>.
 .br
 See the AUTHORS file for a list of other contributors.
 .PP
-Report bugs or suggestions to @email@.
+Report bugs or suggestions to <vlahavas~at~gmail~dot~com>.
 
 .SH SEE ALSO
 .BR SLKBUILD(5)
