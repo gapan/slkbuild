@@ -255,6 +255,10 @@ if [ -n "$options" ]; then
 				echo "Setting option nolinkprepend"
 				LINKPREPEND=''
 				;;
+			txz)
+				echo "Setting package type: txz"
+				PKGEXT="txz"
+				;;
 			tgz)
 				echo "Setting package type: tgz"
 				PKGEXT="tgz"
@@ -266,6 +270,10 @@ if [ -n "$options" ]; then
 			tbz)
 				echo "Setting package type: tbz"
 				PKGEXT="tbz"
+				;;
+			tbr)
+				echo "Setting package type: tbr"
+				PKGEXT="tbr"
 				;;
 			*)
 				echo "$opts is not a correct option, exiting."
