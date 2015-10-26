@@ -614,7 +614,7 @@ post_checks(){
 	# if the docs weren't deleted ...
 	if [ -d "\$startdir/pkg/usr/doc/\$pkgname-\$pkgver" ]; then
 		cd \$startdir/pkg/usr/doc/\$pkgname-\$pkgver
-		#remove zero lenght files
+		#remove zero length files
 		if [[ \$(find . -type f -size 0) ]]; then
 			echo "Removing some zero lenght files"
 			find . -type f -size 0 -exec rm -f {} \;
