@@ -147,6 +147,7 @@ for VAR in pkgname pkgver pkgrel slackdesc; do
 		err "variable \"${VAR}\" is not set"
 done
 
+#If arch is not set, determine it automatically
 if [ -z "$arch" ]; then
 	case "$( uname -m )" in
 		i?86) export arch=i586 ;;
