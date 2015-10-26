@@ -79,7 +79,7 @@ unset ARG1 ARG2
 MAKEPKG=${MAKEPKG:-"/sbin/makepkg"}
 
 #Set the default package format to .txz
-PKGEXT=txz
+PKGEXT=${PKGEXT:-"txz"}
 
 #Use link prepending by default
 LINKPREPEND="-p"
