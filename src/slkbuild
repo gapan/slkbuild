@@ -40,7 +40,7 @@ generate_slkbuild() {
 	EXTENSION="$1"
 	ACTUALFILE=SLKBUILD
 	[ -n "$EXTENSION" ] && ACTUALFILE+=".$EXTENSION"
-	TEMPLATE="@sysconfdir@/$ACTUALFILE"
+	TEMPLATE="@sysconfdir@/slkbuild/$ACTUALFILE"
 	if [ ! -f "$TEMPLATE" ]; then
 		err "No $TEMPLATE found in @sysconfdir@, exiting."
 	elif [ -f "$startdir/SLKBUILD" ]; then
