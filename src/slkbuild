@@ -318,7 +318,7 @@ clean_dirs () {
 }
 
 clean_old_builds () {
-	rm -rf $package.{t[xlgb]z,md5}
+	rm -rf $package.{t[xlgb]z,tbr,md5}
 	clean_dirs
 }
 
