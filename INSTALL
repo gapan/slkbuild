@@ -1,24 +1,30 @@
 slkbuild: arch-like wrapper script for easy packaging
 
 This distribution will run on most UNIX systems.
-Its currently developed under Linux.  With little work it should
-work with most UNIX-like systems.
+Its currently developed under Linux.
 
 Installing
 ---------
 
-The preferred method for installing slkbuild is to use the "configure" scripts
-compatible with most UNIX systems that contain "/bin/sh" or equivalent
-(even the Window's Cygwin setup will work with this).
+The preferred method for installing slkbuild is to use the Makefile script
+compatible with most UNIX systems that contain the "make" command.
 
 To install slkbuild on these platforms run the following commands:
 
-    ./configure
+    make
     make install
 
-There are several optional parameters that you may pass to the configure
-script to customize slkbuild for your applications.  Run "./configure --help"
-for a complete list of options.
+There are several optional parameters that you may pass to the Makefile
+script to customize slkbuild for your applications. These include:
 
-If your system works with the "configure" script then you are done.
+* DESTDIR: The default destination directory (default: /)
+* PREFIX: The default prefix (default: /usr/local)
+* SYSCONFDIR: The default configuration location (default: /etc)
+
+You can export these as environment variables or put them in the same
+line as the make commands. Example:
+
+    make PREFIX=/usr
+    make install PREFIX=/usr
+
 
