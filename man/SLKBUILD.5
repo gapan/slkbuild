@@ -65,6 +65,11 @@ The script already assigned appropriate flags for the project according the the 
 .TP 
 .B doinst()
 This is the script that runs after a package is installed, so put any commands in here that you wan't to be run after the package is installed.
+.TP
+.B Custom Variables
+Custom variables can also be added, so that they are used in the build()
+function. These variables should have a name that starts with an
+underscore.
 
 .SH "AUTHOR"
 George Vlahavas <vlahavas~at~gmail~dot~com>.
