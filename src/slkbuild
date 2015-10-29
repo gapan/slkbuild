@@ -132,6 +132,18 @@ while [ $# -gt 0 ]; do
 	esac
 	shift
 done
+
+#If arch is not set, determine it automatically
+if [ -z "$arch" ]; then
+	case "$( uname -m )" in
+		i?86) export arch=i586 ;;
+		arm*) export arch=arm ;;
+		*) export arch=$( uname -m ) ;;
+	esac
+	echo "Automatically setting arch to $arch"
+fi
+
+#Source the SLKBUILD script
 if [ -f "${startdir}/SLKBUILD" ]; then
 	unset pkgname pkgver pkgrel source extradepends options
 	unset dotnew url CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX slackdesc doinst build docs sourcetemplate
@@ -146,16 +158,6 @@ for VAR in pkgname pkgver pkgrel slackdesc; do
 	[[ ! "${!VAR}" ]] &&
 		err "variable \"${VAR}\" is not set"
 done
-
-#If arch is not set, determine it automatically
-if [ -z "$arch" ]; then
-	case "$( uname -m )" in
-		i?86) export arch=i586 ;;
-		arm*) export arch=arm ;;
-		*) export arch=$( uname -m ) ;;
-	esac
-	echo "Automatically setting arch to $arch"
-fi
 
 #special source check
 if [[ ! "$source" ]]; then
