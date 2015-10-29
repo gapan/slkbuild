@@ -145,8 +145,9 @@ fi
 
 #Source the SLKBUILD script
 if [ -f "${startdir}/SLKBUILD" ]; then
-	unset pkgname pkgver pkgrel source extradepends options
-	unset dotnew url CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX slackdesc doinst build docs sourcetemplate
+	unset pkgname pkgver pkgrel source extradepends options \
+	      dotnew url CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX \
+	      slackdesc doinst build docs sourcetemplate
 	. ${startdir}/SLKBUILD
 else
 	err "No SLKBUILD found in directory, see slkbuild --help"
