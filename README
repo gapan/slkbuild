@@ -1,10 +1,7 @@
 slkbuild: arch-like wrapper script for easy slackware packaging
 
 This is a utility to build packages for Slackware and derivatives
-through the use of makepkg. slkbuild is a fork of buildpkg, which was
-used in Zenwalk. The fork was needed to remove some features that are
-specific to Zenwalk and add features that are not present there, like
-support for the x86_64 architecture.
+through the use of makepkg.
 
 Please note root access is required. Use of fakeroot for running
 slkbuild is advised. Read the man pages slkbuild(8) and SLKBUILD(5)
@@ -15,7 +12,3 @@ for more details on this tool.
 
 Requirements: pkgtools, fakeroot(optional)
 
-Installation:
-
-    ./configure
-    make install DESTDIR=/path/to/installation/root/
