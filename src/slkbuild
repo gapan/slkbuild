@@ -76,7 +76,16 @@ unset REMOVEDIRS
 unset ARG1 ARG2
 
 #Set to use the default makepkg in Slackware
-MAKEPKG=${MAKEPKG:-"/sbin/makepkg"}
+if [[ -z $MAKEPKG ]]; then
+	if [ -x /sbin/makepkg ]; then
+		MAKEPKG="/sbin/makepkg"
+	else
+		echo "Using internal makepkg implementation"
+		MAKEPKG=makepkg_internal
+	fi
+else
+	echo "Using makepkg alternative command: $MAKEPKG"
+fi
 
 #Set the default package format to .txz
 PKGEXT=${PKGEXT:-"txz"}
@@ -394,6 +403,68 @@ create_package() {
 
 EOREDUNDANT
 
+#If the internal makepkg implementation is used instead of an external
+#command, insert the relevant function in the buildscript. The
+#makepkg_internal() function is taken from the fmakepkg() function by
+#ruario: https://gist.github.com/ruario/9672717
+if [[ $MAKEPKG = "makepkg_internal" ]]; then
+cat <<"EOMAKEPKG" >> $startdir/build-$pkgname.sh
+makepkg_internal() {
+
+  # Handle Slackware's makepkg options
+  while [ 0 ]; do
+    if [ "$1" = "-p" -o "$1" = "--prepend" ]; then
+      # option ignored, links are always prepended
+      shift 1
+    elif [ "$1" = "--linkadd" -o "$1" = "-l" ]; then
+      if [ "$2" = "n" ]; then
+        echo "\"$1 $2\" ignored, links are always converted" >&2
+      fi
+      shift 2
+    elif [ "$1" = "--chown" -o "$1" = "-c" ]; then
+      # This option now also changes ownership of all files to root:root
+      SETPERMS="$2"
+      shift 2
+    else
+      break
+    fi
+  done
+
+  # Change any symlinks into shell script code
+  if find * -type l | grep -qm1 .; then
+    mkdir -p install
+    find * -type l -printf '( cd %h ; rm -rf %f )\n( cd %h ; ln -sf %l %f )\n' -delete > install/symlinks
+    if [ -f "install/doinst.sh" ]; then
+      printf '\n' | cat - install/doinst.sh >> install/symlinks
+    fi
+    mv install/symlinks install/doinst.sh
+  fi
+
+  # Reset permissions and ownership
+  if [ "${SETPERMS:-y}" = "y" ]; then
+    find . -type d -exec chmod 755 {} \;
+    # Changing file ownership is an unofficial extension to makepkg
+    TAROWNER="--group 0 --owner 0"
+  else
+    TAROWNER=""
+  fi
+
+  # Create package using tar 1.13 directory formatting
+  case "$1" in
+    *tbz) cmp=bzip2 ;;
+    *tgz) cmp=gzip ;;
+    *tlz) cmp=lzma ;;
+    *txz) cmp=xz ;;
+    *tbr) cmp="bro --quality ${BROTLI_QUALITY:-5}" ;; # Experimental support for Brotli compression
+    *) echo "Unknown compression type" >&2 ; exit 1 ;;
+  esac
+  tar cvvf - . --format gnu --xform 'sx^\./\(.\)x\1x' --show-stored-names $TAROWNER | $cmp > "$1"
+  echo "Slackware package \"$1\" created."
+
+}
+
+EOMAKEPKG
+fi
 
 if [ -z "$NOSTRIP" ]; then
 cat <<"EOREDUNDANT1" >> $startdir/build-$pkgname.sh
