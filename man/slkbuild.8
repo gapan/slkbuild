@@ -50,7 +50,10 @@ Same effect as
 .B MAKEPKG
 If set, points to an alternative
 .B makepkg
-executable.
+executable. If it is not set and if the standard /sbin/makepkg Slackware
+tool is present, this is used for creating that package. If it is not set
+and the standard /sbin/makepkg tool is not present, or if it is set
+to "makepkg_internal", an internal implementation is used.
 .TP
 .B numjobs
 This will set the number of jobs used by make in the build() function of the SLKBUILD file. If not specified, the default value is 1.
