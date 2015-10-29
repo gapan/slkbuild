@@ -1,5 +1,5 @@
 #!/bin/bash
-slkbuildver=1.0
+slkbuildver=1.0beta1
 startdir="$(pwd)"
 
 err()
