@@ -709,8 +709,8 @@ post_checks(){
 
 POSTCHECKS
 
-	# add files in etc to dotnew (if it wasn't defined)
-	if [[ -z $NOAUTODOTNEW ]] && [[ -z $dotnew ]]; then
+# add files in etc to dotnew (if it wasn't defined)
+if [[ -z $NOAUTODOTNEW ]] && [[ -z $dotnew ]]; then
 cat <<NOAUTODOTNEW>>$startdir/build-$pkgname.sh		
 	if [ -d \$startdir/pkg/etc ]; then
 		cd \$startdir/pkg/
