@@ -10,5 +10,5 @@ for more details on this tool.
  BE CAREFUL when adjusting build files as they could potentially harm your
  system if not done properly, especially when running as root!
 
-Requirements: pkgtools, fakeroot(optional)
+Optional Requirements: pkgtools, fakeroot
 
