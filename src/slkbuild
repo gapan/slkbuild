@@ -83,6 +83,8 @@ if [[ -z $MAKEPKG ]]; then
 		echo "Using internal makepkg implementation"
 		MAKEPKG=makepkg_internal
 	fi
+elif [[ $MAKEPKG = "makepkg_internal" ]]; then
+	echo "Using internal makepkg implementation"
 else
 	echo "Using makepkg alternative command: $MAKEPKG"
 fi
