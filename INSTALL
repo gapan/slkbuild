@@ -22,9 +22,10 @@ script to customize slkbuild for your applications. These include:
 * SYSCONFDIR: The default configuration location (default: /etc)
 
 You can export these as environment variables or put them in the same
-line as the make commands. Example:
+line as the make commands. If SYSCONFDIR is to be set, it should be done
+both for both steps. Example:
 
-    make PREFIX=/usr
+    make
     make install PREFIX=/usr
 
 
