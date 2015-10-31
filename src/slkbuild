@@ -75,8 +75,16 @@ unset GENERATE
 unset REMOVEDIRS
 unset ARG1 ARG2
 
-#Set to use the default makepkg in Slackware
-if [[ -z $MAKEPKG ]]; then
+#Set the default package format to .txz
+PKGEXT=${PKGEXT:-"txz"}
+
+#Set to use the default makepkg in Slackware. SInce brotli is still not
+#available in the Slackware pkgtools, if tbr package is requested,
+#default to the internal makepkg
+if [[ $PKGEXT = "tbr" ]]; then
+	echo "Using internal makepkg implementation"
+	MAKEPKG=makepkg_internal
+elif [[ -z $MAKEPKG ]]; then
 	if [ -x /sbin/makepkg ]; then
 		MAKEPKG="/sbin/makepkg"
 	else
@@ -88,9 +96,6 @@ elif [[ $MAKEPKG = "makepkg_internal" ]]; then
 else
 	echo "Using makepkg alternative command: $MAKEPKG"
 fi
-
-#Set the default package format to .txz
-PKGEXT=${PKGEXT:-"txz"}
 
 #Use link prepending by default
 LINKPREPEND="-p"
