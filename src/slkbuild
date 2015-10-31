@@ -293,6 +293,8 @@ if [ -n "$options" ]; then
 			tbr)
 				echo "Setting package type: tbr"
 				PKGEXT="tbr"
+				echo "Switching to the internal makepkg implementation"
+				MAKEPKG=makepkg_internal
 				;;
 			*)
 				echo "$opts is not a correct option, exiting."
