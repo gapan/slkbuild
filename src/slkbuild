@@ -325,7 +325,8 @@ cat <<"EOREDUNDANT" | \
 ######Begin Redundant Code######################################
 check_for_root() {
 	if [ "$UID" != "0" ]; then
-		echo "You need to be root"
+		echo -e "\nERROR: You need to be root. Using fakeroot is usually preferable."
+		echo "Example command: fakeroot slkbuild -X"
 		exit 1
 	fi
 }
