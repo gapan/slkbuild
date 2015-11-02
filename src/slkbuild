@@ -465,7 +465,7 @@ makepkg_internal() {
     *tgz) cmp="gzip -9c" ;;
     *tlz) cmp="lzma -c";;
     *txz) cmp="xz -c";;
-    *tbr) cmp="bro --quality ${BROTLI_QUALITY:-5}" ;; # Experimental support for Brotli compression
+    *tbr) cmp="bro --quality ${BROTLI_QUALITY:-1}" ;; # Experimental support for Brotli compression
     *) echo "Unknown compression type" >&2 ; exit 1 ;;
   esac
   tar cvvf - . --format gnu --xform 'sx^\./\(.\)x\1x' --show-stored-names $TAROWNER | $cmp > "$1"
