@@ -461,10 +461,10 @@ makepkg_internal() {
 
   # Create package using tar 1.13 directory formatting
   case "$1" in
-    *tbz) cmp=bzip2 ;;
-    *tgz) cmp=gzip ;;
-    *tlz) cmp=lzma ;;
-    *txz) cmp=xz ;;
+    *tbz) cmp="bzip2 -9c" ;;
+    *tgz) cmp="gzip -9c" ;;
+    *tlz) cmp="lzma -c";;
+    *txz) cmp="xz -c";;
     *tbr) cmp="bro --quality ${BROTLI_QUALITY:-5}" ;; # Experimental support for Brotli compression
     *) echo "Unknown compression type" >&2 ; exit 1 ;;
   esac
