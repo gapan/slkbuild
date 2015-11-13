@@ -348,16 +348,19 @@ clean_old_builds () {
 
 set_pre_permissions() {
     cd $startdir/src
+    find . -perm 666 -exec chmod 644 {} \;
     find . -perm 664 -exec chmod 644 {} \;
+    find . -perm 640 -exec chmod 644 {} \;
     find . -perm 600 -exec chmod 644 {} \;
     find . -perm 444 -exec chmod 644 {} \;
-    find . -perm 400 -exec chmod 644 {} \;
     find . -perm 440 -exec chmod 644 {} \;
+    find . -perm 400 -exec chmod 644 {} \;
     find . -perm 777 -exec chmod 755 {} \;
     find . -perm 775 -exec chmod 755 {} \;
-    find . -perm 511 -exec chmod 755 {} \;
+    find . -perm 750 -exec chmod 755 {} \;
     find . -perm 711 -exec chmod 755 {} \;
     find . -perm 555 -exec chmod 755 {} \;
+    find . -perm 511 -exec chmod 755 {} \;
 }
 
 
