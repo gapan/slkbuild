@@ -491,10 +491,12 @@ if [ -z "$NOSTRIP" ]; then
 cat <<"EOREDUNDANT1" >> $startdir/build-$pkgname.sh
 strip_binaries() {
     cd $startdir/pkg
-    find . | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | \
-    xargs strip --strip-unneeded 2> /dev/null
-    find . | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | \
-    xargs strip --strip-unneeded 2> /dev/null
+    find . -print0 | \
+        xargs -0r file | \
+        grep -e "executable" -e "shared object" | \
+        grep ELF | \
+        cut -f 1 -d : | \
+        xargs strip --strip-unneeded 2> /dev/null || true
 }
 EOREDUNDANT1
 fi
