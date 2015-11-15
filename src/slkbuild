@@ -641,14 +641,16 @@ EOQ
 fi
 
 if [[ "$(grep '^doinst\(\)' $startdir/SLKBUILD)" ]]; then
-    cat <<EOPOSTINSTALL >>$startdir/build-$pkgname.sh
-setup_doinst() {
-cat <<"EODOINST" >>\$startdir/pkg/install/doinst.sh
-$(sed -n '/doinst()/,/^}$/p' $startdir/SLKBUILD)
-doinst
-EODOINST
-}
-EOPOSTINSTALL
+    echo 'setup_doinst() {' >> $startdir/build-$pkgname.sh
+    echo 'cat <<"EODOINST" >>$startdir/pkg/install/doinst.sh' \
+        >>$startdir/build-$pkgname.sh
+    declare -f doinst | \
+        sed "s/\$pkgname\|\${pkgname}/$pkgname/g" | \
+        sed "s/\$pkgver\|\${pkgver}/$pkgver/g" \
+        >>$startdir/build-$pkgname.sh
+    echo 'doinst' >>$startdir/build-$pkgname.sh
+    echo 'EODOINST' >>$startdir/build-$pkgname.sh
+    echo -e '}\n' >>$startdir/build-$pkgname.sh
 fi
 
 if [[ "$docs" ]]; then
