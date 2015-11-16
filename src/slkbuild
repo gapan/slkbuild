@@ -318,6 +318,67 @@ fi
     grep -e "^#Former Maintainer(s)\|^#Former Packager(s)" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
 [[ "$url" ]] && echo "#url: $url" >> $startdir/build-$pkgname.sh
 
+##########Variables START
+cat <<EOVARIABLES >>$startdir/build-$pkgname.sh
+
+###Variables
+startdir=\$(pwd)
+SRC=\$startdir/src
+PKG=\$startdir/pkg
+
+pkgname=$pkgname
+pkgver=$pkgver
+pkgrel=$pkgrel
+arch=$arch
+numjobs=${numjobs:-1}
+package=\$pkgname-\$pkgver-\$arch-$pkgrel
+EOVARIABLES
+
+grep -e "^_[a-zA-Z]*=[a-zA-Z]*" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
+for (( I=0; I < ${#source[@]} ; I++)); do
+        source[$I]="\"${source[$I]}\""
+done
+echo "source=(${source[@]})" >> $startdir/build-$pkgname.sh
+if [[ ! -z $sourcetemplate ]]; then
+    if [ ${sourcetemplate: -1} == "/" ]; then
+        tmpsource=$(echo $sourcetemplate | rev);
+        echo "sourcetemplate=$(echo ${tmpsource:1} | rev)" >> $startdir/build-$pkgname.sh
+    else
+        echo "sourcetemplate=$sourcetemplate" >> $startdir/build-$pkgname.sh
+    fi
+fi
+echo "docs=(${docs[@]})" >> $startdir/build-$pkgname.sh
+
+if [ $arch == "x86_64" ]; then
+    CFLAGS=${CFLAGS:-"-O2 -fPIC"}
+    CXXFLAGS=${CFLAGS:-"-O2 -fPIC"}
+    SLKCFLAGS=${CFLAGS}
+    LIBDIRSUFFIX="64"
+elif [ $arch == "i486" ] || [ $arch == "i586" ]; then
+    CFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
+    CXXFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
+    SLKCFLAGS=${CFLAGS}
+    LIBDIRSUFFIX=""
+elif [ $arch == "arm" ]; then
+    CFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
+    CXXFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
+    SLKCFLAGS=${CFLAGS}
+    LIBDIRSUFFIX=""
+else
+    CFLAGS=${CFLAGS:-"-O2 -march=$arch"}
+    CXXFLAGS=${CFLAGS:-"-O2 -march=$arch"}
+    SLKCFLAGS=${CFLAGS}
+    LIBDIRSUFFIX=""
+fi
+ARCH=$arch
+
+for FLAGS in CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX ARCH; do
+    echo "export $FLAGS=\"${!FLAGS}\"" >>$startdir/build-$pkgname.sh
+done
+
+##########Variables END
+
+
 cat <<"EOREDUNDANT" | \
     sed "s|__MAKEPKG__|$MAKEPKG|g" | \
     sed "s|__LINKPREPEND__|$LINKPREPEND|g" | \
@@ -655,7 +716,9 @@ if [[ "$(grep '^doinst\(\)' $startdir/SLKBUILD)" ]]; then
         >>$startdir/build-$pkgname.sh
     declare -f doinst | \
         sed "s/\$pkgname\|\${pkgname}/$pkgname/g" | \
-        sed "s/\$pkgver\|\${pkgver}/$pkgver/g" \
+        sed "s/\$pkgver\|\${pkgver}/$pkgver/g" | \
+        sed "s/\$arch\|\${arch}\|\$ARCH\|\${ARCH}/$arch/g" | \
+        sed "s/\$LIBDIRSUFFIX\|\${LIBDIRSUFFIX}/$LIBDIRSUFFIX/g" \
         >>$startdir/build-$pkgname.sh
     echo 'doinst' >>$startdir/build-$pkgname.sh
     echo 'EODOINST' >>$startdir/build-$pkgname.sh
@@ -772,70 +835,12 @@ NOAUTODOTNEW
 fi
 cat <<ENDPOSTCHECK >>$startdir/build-$pkgname.sh
 }
-ENDPOSTCHECK
-
-cat <<EOVARIABLES >>$startdir/build-$pkgname.sh
 
 ####End Non Redundant Code############################
+ENDPOSTCHECK
 
-#Variables
-
-startdir=\$(pwd)
-SRC=\$startdir/src
-PKG=\$startdir/pkg
-
-pkgname=$pkgname
-pkgver=$pkgver
-pkgrel=$pkgrel
-arch=$arch
-numjobs=${numjobs:-1}
-package=\$pkgname-\$pkgver-\$arch-$pkgrel
-EOVARIABLES
-
-grep -e "^_[a-zA-Z]*=[a-zA-Z]*" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
-for (( I=0; I < ${#source[@]} ; I++)); do
-        source[$I]="\"${source[$I]}\""
-done
-echo "source=(${source[@]})" >> $startdir/build-$pkgname.sh
-if [[ ! -z $sourcetemplate ]]; then 
-    if [ ${sourcetemplate: -1} == "/" ]; then
-        tmpsource=$(echo $sourcetemplate | rev);
-        echo "sourcetemplate=$(echo ${tmpsource:1} | rev)" >> $startdir/build-$pkgname.sh
-    else
-        echo "sourcetemplate=$sourcetemplate" >> $startdir/build-$pkgname.sh
-    fi
-fi
-echo "docs=(${docs[@]})" >> $startdir/build-$pkgname.sh
-
-if [ $arch == "x86_64" ]; then
-    CFLAGS=${CFLAGS:-"-O2 -fPIC"}
-    CXXFLAGS=${CFLAGS:-"-O2 -fPIC"}
-    SLKCFLAGS=${CFLAGS}
-    LIBDIRSUFFIX="64"
-elif [ $arch == "i486" ] || [ $arch == "i586" ]; then
-    CFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
-    CXXFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
-    SLKCFLAGS=${CFLAGS}
-    LIBDIRSUFFIX=""
-elif [ $arch == "arm" ]; then
-    CFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
-    CXXFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
-    SLKCFLAGS=${CFLAGS}
-    LIBDIRSUFFIX=""
-else
-    CFLAGS=${CFLAGS:-"-O2 -march=$arch"}
-    CXXFLAGS=${CFLAGS:-"-O2 -march=$arch"}
-    SLKCFLAGS=${CFLAGS}
-    LIBDIRSUFFIX=""
-fi
-ARCH=$arch
-
-for FLAGS in CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX ARCH; do
-    echo "export $FLAGS=\"${!FLAGS}\"" >>$startdir/build-$pkgname.sh
-done
 
 cat <<"EOEXECUTION1" >> $startdir/build-$pkgname.sh
-
 #Execution
 
 check_for_root
