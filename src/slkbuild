@@ -461,8 +461,10 @@ set_post_permissions() {
     for DIRS in usr/share/icons usr/doc; do
         if [ -d "$startdir/pkg/$DIRS" ]; then
             if [ "$DIRS" == "usr/doc" ]; then
-                find $startdir/pkg/$DIRS -type f -exec chmod 644 {} \;
-                find $startdir/pkg/$DIRS -type d -exec chmod 755 {} \;
+                find -L $startdir/pkg/$DIRS -type f -print0 | \
+                    xargs -0r chmod 644
+                find -L $startdir/pkg/$DIRS -type d -print0 | \
+                    xargs -0r chmod 755
             fi
         fi
         [ -d $startdir/pkg/$DIRS ] && chown root:root -R $startdir/pkg/$DIRS
