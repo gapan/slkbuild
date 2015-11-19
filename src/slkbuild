@@ -654,7 +654,7 @@ extract_source() {
 EOEXTRACTSOURCES
 fi
 
-sed -n '/^build()/,/^}$/p' $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
+declare -f build >> $startdir/build-$pkgname.sh
 
 cat <<EOM >>$startdir/build-$pkgname.sh
 
