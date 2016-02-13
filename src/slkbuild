@@ -262,7 +262,7 @@ if [ -n "$options" ]; then
                 KEEPLA='1'
                 ;;
             nosrcpack)
-                echo "Settings option nosrcpack"
+                echo "Setting option nosrcpack"
                 NOSRCPACK='1'
                 ;;
             noextract)
