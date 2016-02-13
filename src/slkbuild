@@ -257,6 +257,10 @@ if [ -n "$options" ]; then
     unset NOAUTODOTNEW
     for opts in ${options[@]}; do
         case $opts in
+            keepla)
+                echo "Setting option keepla"
+                KEEPLA='1'
+                ;;
             nosrcpack)
                 echo "Settings option nosrcpack"
                 NOSRCPACK='1'
@@ -431,6 +435,11 @@ set_pre_permissions() {
         xargs -0r chmod 644
 }
 
+
+remove_libtool_archives() {
+    find $startdir/pkg/lib${LIBDIRSUFFIX} -name "*.la" -delete
+    find $startdir/pkg/usr/lib${LIBDIRSUFFIX} -name "*.la" -delete
+}
 
 gzip_man_and_info_pages() {
     for DOCS in man info; do
@@ -865,6 +874,8 @@ EOEXECUTION2
 [[ "$dotnew" ]] && echo "setup_dotnew" >>$startdir/build-$pkgname.sh
 [[ "$(grep '^doinst\(\)' $startdir/SLKBUILD)" ]] && echo "setup_doinst" >>$startdir/build-$pkgname.sh
 [[ "$docs" ]] && echo "copy_docs" >>$startdir/build-$pkgname.sh
+[[ $KEEPLA -ne 1 ]] && echo "remove_libtool_archives" >> \
+   $startdir/build-$pkgname.sh
 
 [ -z "$NOSTRIP" ] && echo "strip_binaries" >>$startdir/build-$pkgname.sh
 cat <<"EOEXECUTION32" >> $startdir/build-$pkgname.sh
