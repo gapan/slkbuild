@@ -1,7 +1,7 @@
 #!/bin/bash
 # vim:et:sta:sts=4:sw=4:ts=8:tw=79:
 
-slkbuildver=1.0beta1
+slkbuildver=1.0
 startdir="$(pwd)"
 
 err()
@@ -77,8 +77,9 @@ unset GENERATE
 unset REMOVEDIRS
 unset ARG1 ARG2
 
-#Set the default package format to .txz
-PKGEXT=${PKGEXT:-"txz"}
+#If PKGEXT or PKGTYPE is set, use that as the package format. PKGEXT has
+#priority over PKGTYPE. Otherwise set the default package format to .txz
+PKGEXT=${PKGEXT:-${PKGTYPE:-"txz"}}
 
 #Set to use the default makepkg in Slackware. SInce brotli is still not
 #available in the Slackware pkgtools, if tbr package is requested,
@@ -256,8 +257,12 @@ if [ -n "$options" ]; then
     unset NOAUTODOTNEW
     for opts in ${options[@]}; do
         case $opts in
+            keepla)
+                echo "Setting option keepla"
+                KEEPLA='1'
+                ;;
             nosrcpack)
-                echo "Settings option nosrcpack"
+                echo "Setting option nosrcpack"
                 NOSRCPACK='1'
                 ;;
             noextract)
@@ -318,6 +323,67 @@ fi
     grep -e "^#Former Maintainer(s)\|^#Former Packager(s)" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
 [[ "$url" ]] && echo "#url: $url" >> $startdir/build-$pkgname.sh
 
+##########Variables START
+cat <<EOVARIABLES >>$startdir/build-$pkgname.sh
+
+###Variables
+startdir=\$(pwd)
+SRC=\$startdir/src
+PKG=\$startdir/pkg
+
+pkgname=$pkgname
+pkgver=$pkgver
+pkgrel=$pkgrel
+arch=$arch
+numjobs=${numjobs:-1}
+package=\$pkgname-\$pkgver-\$arch-$pkgrel
+EOVARIABLES
+
+grep -e "^_[a-zA-Z]*=[a-zA-Z]*" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
+for (( I=0; I < ${#source[@]} ; I++)); do
+        source[$I]="\"${source[$I]}\""
+done
+echo "source=(${source[@]})" >> $startdir/build-$pkgname.sh
+if [[ ! -z $sourcetemplate ]]; then
+    if [ ${sourcetemplate: -1} == "/" ]; then
+        tmpsource=$(echo $sourcetemplate | rev);
+        echo "sourcetemplate=$(echo ${tmpsource:1} | rev)" >> $startdir/build-$pkgname.sh
+    else
+        echo "sourcetemplate=$sourcetemplate" >> $startdir/build-$pkgname.sh
+    fi
+fi
+echo "docs=(${docs[@]})" >> $startdir/build-$pkgname.sh
+
+if [ $arch == "x86_64" ]; then
+    CFLAGS=${CFLAGS:-"-O2 -fPIC"}
+    CXXFLAGS=${CFLAGS:-"-O2 -fPIC"}
+    SLKCFLAGS=${CFLAGS}
+    LIBDIRSUFFIX="64"
+elif [ $arch == "i486" ] || [ $arch == "i586" ]; then
+    CFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
+    CXXFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
+    SLKCFLAGS=${CFLAGS}
+    LIBDIRSUFFIX=""
+elif [ $arch == "arm" ]; then
+    CFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
+    CXXFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
+    SLKCFLAGS=${CFLAGS}
+    LIBDIRSUFFIX=""
+else
+    CFLAGS=${CFLAGS:-"-O2 -march=$arch"}
+    CXXFLAGS=${CFLAGS:-"-O2 -march=$arch"}
+    SLKCFLAGS=${CFLAGS}
+    LIBDIRSUFFIX=""
+fi
+ARCH=$arch
+
+for FLAGS in CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX ARCH; do
+    echo "export $FLAGS=\"${!FLAGS}\"" >>$startdir/build-$pkgname.sh
+done
+
+##########Variables END
+
+
 cat <<"EOREDUNDANT" | \
     sed "s|__MAKEPKG__|$MAKEPKG|g" | \
     sed "s|__LINKPREPEND__|$LINKPREPEND|g" | \
@@ -370,6 +436,11 @@ set_pre_permissions() {
 }
 
 
+remove_libtool_archives() {
+    find $startdir/pkg/lib${LIBDIRSUFFIX} -name "*.la" -delete
+    find $startdir/pkg/usr/lib${LIBDIRSUFFIX} -name "*.la" -delete
+}
+
 gzip_man_and_info_pages() {
     for DOCS in man info; do
         if [ -d "$startdir/pkg/usr/share/$DOCS" ]; then
@@ -400,8 +471,10 @@ set_post_permissions() {
     for DIRS in usr/share/icons usr/doc; do
         if [ -d "$startdir/pkg/$DIRS" ]; then
             if [ "$DIRS" == "usr/doc" ]; then
-                find $startdir/pkg/$DIRS -type f -exec chmod 644 {} \;
-                find $startdir/pkg/$DIRS -type d -exec chmod 755 {} \;
+                find -L $startdir/pkg/$DIRS -type f -print0 | \
+                    xargs -0r chmod 644
+                find -L $startdir/pkg/$DIRS -type d -print0 | \
+                    xargs -0r chmod 755
             fi
         fi
         [ -d $startdir/pkg/$DIRS ] && chown root:root -R $startdir/pkg/$DIRS
@@ -593,7 +666,7 @@ extract_source() {
 EOEXTRACTSOURCES
 fi
 
-sed -n '/^build()/,/^}$/p' $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
+declare -f build >> $startdir/build-$pkgname.sh
 
 cat <<EOM >>$startdir/build-$pkgname.sh
 
@@ -652,14 +725,18 @@ EOQ
 fi
 
 if [[ "$(grep '^doinst\(\)' $startdir/SLKBUILD)" ]]; then
-    cat <<EOPOSTINSTALL >>$startdir/build-$pkgname.sh
-setup_doinst() {
-cat <<"EODOINST" >>\$startdir/pkg/install/doinst.sh
-$(sed -n '/doinst()/,/^}$/p' $startdir/SLKBUILD)
-doinst
-EODOINST
-}
-EOPOSTINSTALL
+    echo 'setup_doinst() {' >> $startdir/build-$pkgname.sh
+    echo 'cat <<"EODOINST" >>$startdir/pkg/install/doinst.sh' \
+        >>$startdir/build-$pkgname.sh
+    declare -f doinst | \
+        sed "s/\$pkgname\|\${pkgname}/$pkgname/g" | \
+        sed "s/\$pkgver\|\${pkgver}/$pkgver/g" | \
+        sed "s/\$arch\|\${arch}\|\$ARCH\|\${ARCH}/$arch/g" | \
+        sed "s/\$LIBDIRSUFFIX\|\${LIBDIRSUFFIX}/$LIBDIRSUFFIX/g" \
+        >>$startdir/build-$pkgname.sh
+    echo 'doinst' >>$startdir/build-$pkgname.sh
+    echo 'EODOINST' >>$startdir/build-$pkgname.sh
+    echo -e '}\n' >>$startdir/build-$pkgname.sh
 fi
 
 if [[ "$docs" ]]; then
@@ -772,70 +849,12 @@ NOAUTODOTNEW
 fi
 cat <<ENDPOSTCHECK >>$startdir/build-$pkgname.sh
 }
-ENDPOSTCHECK
-
-cat <<EOVARIABLES >>$startdir/build-$pkgname.sh
 
 ####End Non Redundant Code############################
+ENDPOSTCHECK
 
-#Variables
-
-startdir=\$(pwd)
-SRC=\$startdir/src
-PKG=\$startdir/pkg
-
-pkgname=$pkgname
-pkgver=$pkgver
-pkgrel=$pkgrel
-arch=$arch
-numjobs=${numjobs:-1}
-package=\$pkgname-\$pkgver-\$arch-$pkgrel
-EOVARIABLES
-
-grep -e "^_[a-zA-Z]*=[a-zA-Z]*" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
-for (( I=0; I < ${#source[@]} ; I++)); do
-        source[$I]="\"${source[$I]}\""
-done
-echo "source=(${source[@]})" >> $startdir/build-$pkgname.sh
-if [[ ! -z $sourcetemplate ]]; then 
-    if [ ${sourcetemplate: -1} == "/" ]; then
-        tmpsource=$(echo $sourcetemplate | rev);
-        echo "sourcetemplate=$(echo ${tmpsource:1} | rev)" >> $startdir/build-$pkgname.sh
-    else
-        echo "sourcetemplate=$sourcetemplate" >> $startdir/build-$pkgname.sh
-    fi
-fi
-echo "docs=(${docs[@]})" >> $startdir/build-$pkgname.sh
-
-if [ $arch == "x86_64" ]; then
-    CFLAGS=${CFLAGS:-"-O2 -fPIC"}
-    CXXFLAGS=${CFLAGS:-"-O2 -fPIC"}
-    SLKCFLAGS=${CFLAGS}
-    LIBDIRSUFFIX="64"
-elif [ $arch == "i486" ] || [ $arch == "i586" ]; then
-    CFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
-    CXXFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
-    SLKCFLAGS=${CFLAGS}
-    LIBDIRSUFFIX=""
-elif [ $arch == "arm" ]; then
-    CFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
-    CXXFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
-    SLKCFLAGS=${CFLAGS}
-    LIBDIRSUFFIX=""
-else
-    CFLAGS=${CFLAGS:-"-O2 -march=$arch"}
-    CXXFLAGS=${CFLAGS:-"-O2 -march=$arch"}
-    SLKCFLAGS=${CFLAGS}
-    LIBDIRSUFFIX=""
-fi
-ARCH=$arch
-
-for FLAGS in CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX ARCH; do
-    echo "export $FLAGS=\"${!FLAGS}\"" >>$startdir/build-$pkgname.sh
-done
 
 cat <<"EOEXECUTION1" >> $startdir/build-$pkgname.sh
-
 #Execution
 
 check_for_root
@@ -857,6 +876,8 @@ EOEXECUTION2
 [[ "$dotnew" ]] && echo "setup_dotnew" >>$startdir/build-$pkgname.sh
 [[ "$(grep '^doinst\(\)' $startdir/SLKBUILD)" ]] && echo "setup_doinst" >>$startdir/build-$pkgname.sh
 [[ "$docs" ]] && echo "copy_docs" >>$startdir/build-$pkgname.sh
+[[ $KEEPLA -ne 1 ]] && echo "remove_libtool_archives" >> \
+   $startdir/build-$pkgname.sh
 
 [ -z "$NOSTRIP" ] && echo "strip_binaries" >>$startdir/build-$pkgname.sh
 cat <<"EOEXECUTION32" >> $startdir/build-$pkgname.sh
