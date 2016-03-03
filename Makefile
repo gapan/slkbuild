@@ -2,7 +2,7 @@ PREFIX ?= /usr/local
 DESTDIR ?= /
 SYSCONFDIR ?= /etc
 
-all:
+all: man
 	sed -i "s|@sysconfdir@|$(SYSCONFDIR)|g" src/slkbuild
 
 install:
@@ -12,4 +12,10 @@ install:
 	install -d -m 755 $(DESTDIR)/$(SYSCONFDIR)/slkbuild
 	install -m 644 etc/SLKBUILD* $(DESTDIR)/$(SYSCONFDIR)/slkbuild/
 
-.PHONY: all install
+man:
+	make man -C man
+
+clean:
+	make clean -C man
+
+.PHONY: all install man
