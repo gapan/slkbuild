@@ -1,0 +1,130 @@
+slkbuild
+George Vlahavas
+%%mtime(%m/%d/%Y)
+
+%!target: man
+%!encoding: utf-8
+%!postproc(man): "^(\.TH.*) 1 "  "\1 8 "
+
+= NAME =
+
+slkbuild - automated build script creation tool
+
+
+= SYNOPSIS =
+
+**slkbuild** [//OPTIONS//]
+
+
+= DESCRIPTION =
+
+**slkbuild** is a script inspired by makepkg from arch which greatly
+simplifies the build process. It parses an easy to create //SLKBUILD//
+meta-file and from that creates a conventional build script that follows
+all of the slackware packaging standards that can be run on its own. See
+**SLKBUILD**(5) for details on how to create proper meta-files.
+
+The advantage of using slkbuild is that it ensures package uniformity
+and allows for an easy to edit meta-file in the event that one might
+require customization or might need to update the script for new
+releases. It also makes the buid process much quicker as downloading the
+source, untarring, gzipping man and info pages, stripping binaries,
+making sure on graphical applications that the menu entry is compliant
+as well as a host of other things are taken care of automatically
+freeing up time that would otherwise be consumed by these redundant
+tasks.
+
+
+= OPTIONS =
+
+When run with no arguments, slkbuild sources the //SLKBUILD// meta-file
+in the current directory (the //SLKBUILD// file must be in the current
+directory), and creates a conventional //build-$pkgname.sh//
+script, which you can then inspect or do whatever with and then run.
+
+: **-g**, **--generate** [//prototype//]
+
+Copies over //SLKBUILD// prototypes stored in ///etc/slkbuild//. It
+optionally takes a prototype argument which allows for multiple
+prototypes to be stored. The prototype argument is the extension of the
+//SLKBUILD// prototype stored in ///etc/slkbuild//. For example, if you
+ran //slkbuild -g python//, ///etc/slkbuild/SLKBUILD.python// will be
+copied over, //slkbuild -g perl//, ///etc/slkbuild/SLKBUILD.perl// will
+be copied over etc. If called with no prototype argument,
+//slkbuild -g//, it moves over ///etc/slkbuild/SLKBUILD//.
+
+: **-x**, **--execute**
+Does everything that running it with no arguments would but afterwards
+actually executes the //build-$pkgname.sh// script. Remember that like
+running any build script, this option will require you to be root. This
+option does log the output of the build script's execution to
+//build-$pkgname.log// in the current directory.
+
+: **-c**, **--clean-dirs**
+Creates a //build-$pkgname.sh// script that, when it is run, will remove
+the //pkg// and //src// directories after building the package.
+
+
+: **-X**, **--x-and-clean**
+Same behaviour as **-x** and **-c** combined together. It additionally
+delete the //build-$pkgname.sh// script, after executing it to create
+the package.
+
+: **-h, --help**
+Displays a help dialog.
+
+: **-v**, **--version**
+Outputs the slkbuild version.
+
+
+= ENVIRONMENT VARIABLES =
+
+When executed, slkbuild will look for the following environment
+variables. If they have been specified, they will be used for creating
+the package.
+
+: **arch**
+This will set the arch used for building the package. See also
+**SLKBUILD**(5).
+
+: **ARCH**
+Same effect as **arch**.
+
+: **MAKEPKG**
+If set, points to an alternative **makepkg** executable. If it is not
+set and if the standard **/sbin/makepkg** Slackware tool is not present,
+or if it is set to **makepkg_internal**, an internal implementation is
+used.
+
+: **numjobs**
+This will set the number of jobs used by make in the //build()//
+function of the SLKBUILD file. If not specified, the default value is
+//1//.
+
+: **PKGEXT**
+Sets the package type to use. Could be set to //txz//, //tgz//, //tlz//,
+//tbz// or //tbr//. This is overriden if any respective setting within
+the **SLKBUILD**(5) meta-file is set.
+
+
+= WEBSITE =
+
+https://github.com/gapan/slkbuild
+
+
+= AUTHORS =
+
+slkbuild was forked from buildpkg by George Vlahavas
+<vlahavas~at~gmail~dot~com>.
+
+buildpkg was initially written by Matthew Bruenig
+<matthewbruenig~at~gmail~dot~com>.
+
+See the AUTHORS file for a list of other contributors.
+
+Report bugs or suggestions to //vlahavas~at~gmail~dot~com//.
+
+
+= SEE ALSO =
+
+**SLKBUILD**(5)
