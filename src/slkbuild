@@ -437,8 +437,10 @@ set_pre_permissions() {
 
 
 remove_libtool_archives() {
-    find $startdir/pkg/lib${LIBDIRSUFFIX} -name "*.la" -delete
-    find $startdir/pkg/usr/lib${LIBDIRSUFFIX} -name "*.la" -delete
+    [ -d $startdir/pkg/lib${LIBDIRSUFFIX} ] && \
+        find $startdir/pkg/lib${LIBDIRSUFFIX} -name "*.la" -delete
+    [ -d $startdir/pkg/usr/lib${LIBDIRSUFFIX} ] && \
+        find $startdir/pkg/usr/lib${LIBDIRSUFFIX} -name "*.la" -delete
 }
 
 gzip_man_and_info_pages() {
