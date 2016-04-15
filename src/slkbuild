@@ -191,8 +191,8 @@ fi
     err "No build() function found"
 
 #check that variables are sane
-[[ "$(echo $pkgver | grep -E '\-|_')" ]] &&
-        err "No dashes or underscores allowed in pkgver"
+[[ "$(echo $pkgver | grep -E '\-')" ]] &&
+        err "No dashes allowed in pkgver"
 
 [[ "${slackdesc[10]}" ]] &&
     err "No more than 10 lines allowed in slackdesc"

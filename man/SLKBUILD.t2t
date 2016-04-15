@@ -22,15 +22,14 @@ of each.
 : **pkgname**
 The name of the package. Per packaging standards, keep it all lowercase.
 : **pkgver**
-The version of the software. No dashes or underscores are allowed, just
-numbers and dots. For packages created from svn, you can use "r12345",
+The version of the software. No dashes are allowed. For packages
+created from svn, you can use "r12345",
 if you checked out revision 12345. For cvs and git packages you
 can use the current date in the form YEARMONTHDAY, e.g.
 "20100115". Alpha and beta releases can be designated as such by
 appending the alpha or beta versions to the package, e.g.
 "1.0beta5" or "1.0b5", usually in the same way the source
-package is versioned, keeping in mind that no dashes or
-underscores are allowed.
+package is versioned, keeping in mind that no dashes are allowed.
 : **pkgrel**
 This is the release number of the package. A release number is the
 number of times this package has been created for this particular
