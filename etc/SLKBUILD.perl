@@ -2,7 +2,7 @@
 #Former Packager(s): Name <email@address.com>
 #Anything commented out is optional and can be deleted.
 
-# _perlname is the module name as provided in CPAN.
+# _cpanname is the module name as provided in CPAN.
 # For example: Archive-Zip
 # The corresponding package will be named: perl-Archive-Zip
 _cpanname=
