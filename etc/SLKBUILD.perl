@@ -2,7 +2,11 @@
 #Former Packager(s): Name <email@address.com>
 #Anything commented out is optional and can be deleted.
 
-pkgname=
+# _perlname is the module name as provided in CPAN.
+# For example: Archive-Zip
+# The corresponding package will be named: perl-Archive-Zip
+_cpanname=
+pkgname=perl-${_cpanname}
 pkgver=
 pkgrel=
 #arch=noarch
@@ -27,7 +31,7 @@ slackdesc=\
 
 
 build() {
-	cd $startdir/src/$pkgname-$pkgver
+	cd $startdir/src/${_cpanname}-$pkgver
 
 	perl Makefile.PL || exit 1
 	make OPTIMIZE="$CFLAGS" || exit 1
