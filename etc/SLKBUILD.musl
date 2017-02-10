@@ -1,0 +1,41 @@
+#Packager: Name <email@address.com>
+#Former Packager(s): Name <email@address.com>
+#Anything commented out is optional and can be deleted.
+
+pkgname=
+pkgver=
+pkgrel=
+#arch=noarch
+source=()
+#sourcetemplate=http://people.salixos.org/yournick/$pkgname/$pkgver/
+#docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+#url=
+#dotnew=()
+#CFLAGS=
+#CXXFLAGS=
+#options=('noextract')
+
+#doinst() {
+#
+#}
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+""
+)
+
+
+build() {
+	export CC=musl-gcc
+	
+	cd $startdir/src/$pkgname-$pkgver
+	./configure --prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX}/musl \
+		--includedir=/usr/include/musl
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--build=$arch-slackware-linux
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+} 
