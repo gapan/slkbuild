@@ -485,8 +485,8 @@ set_post_permissions() {
 }
 
 copy_build_script() {
-    mkdir -p $startdir/pkg/usr/src/$pkgname-$pkgver/
-    [ -f $startdir/SLKBUILD ] && cp $startdir/SLKBUILD    $startdir/pkg/usr/src/$pkgname-$pkgver/SLKBUILD
+    mkdir -p $startdir/pkg/usr/doc/$pkgname-$pkgver/
+    [ -f $startdir/SLKBUILD ] && cp $startdir/SLKBUILD    $startdir/pkg/usr/doc/$pkgname-$pkgver/SLKBUILD
 }
 
 create_package() {
@@ -587,7 +587,7 @@ cat <<EOPREPAREDIRECTORY >>$startdir/build-$pkgname.sh
 prepare_directory() {
     NOSRCPACK="$NOSRCPACK"
     mkdir \$startdir/src
-    mkdir -p \$startdir/pkg/usr/src/\$pkgname-\$pkgver
+    mkdir -p \$startdir/pkg/usr/doc/\$pkgname-\$pkgver
     for SOURCES in \${source[@]}; do
         protocol=\$(echo \$SOURCES | sed 's|:.*||')
             file=\$(basename \$SOURCES | awk -F= '{print \$NF}')
@@ -607,7 +607,7 @@ prepare_directory() {
         cp -LR \$file \$startdir/src
         if ! [ "\$protocol" = "http" -o "\$protocol" = "https" -o "\$protocol" = "ftp" ]; then
             if ! [[ \$NOSRCPACK -eq 1 ]]; then
-                cp -LR \$startdir/\$(basename \$SOURCES) \$startdir/pkg/usr/src/\$pkgname-\$pkgver/
+                cp -LR \$startdir/\$(basename \$SOURCES) \$startdir/pkg/usr/doc/\$pkgname-\$pkgver/
             fi
         fi
     done
