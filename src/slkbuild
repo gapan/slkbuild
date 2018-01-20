@@ -156,7 +156,8 @@ done
 if [ -z "$arch" ]; then
     case "$( uname -m )" in
         i?86) export arch=i586 ;;
-        arm*) export arch=arm ;;
+        arm*) readelf /usr/bin/file -A | egrep -q "Tag_CPU.*[4,5]" && \
+            arch=arm || arch=armv7hl ;;
         *) export arch=$( uname -m ) ;;
     esac
     echo "Automatically setting arch to $arch"
@@ -364,9 +365,9 @@ elif [ $arch == "i486" ] || [ $arch == "i586" ]; then
     CXXFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
     SLKCFLAGS=${CFLAGS}
     LIBDIRSUFFIX=""
-elif [ $arch == "arm" ]; then
-    CFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
-    CXXFLAGS=${CFLAGS:-"-O2 -march=armv5te"}
+elif [ $arch == "armv7hl" ]; then
+    CFLAGS=${CFLAGS:-"-O2 -march=armv7-a -mfpu=vfpv3-d16"}
+    CXXFLAGS=${CFLAGS:-"-O2 -march=armv7-a -mfpu=vfpv3-d16"}
     SLKCFLAGS=${CFLAGS}
     LIBDIRSUFFIX=""
 else
