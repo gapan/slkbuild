@@ -314,7 +314,7 @@ fi
 
 #######Generate Build Script#####################################
 cat <<EOA > ${startdir}/build-${pkgname}.sh
-#!/bin/bash
+#!/bin/bash -p
 #Automatically Created by slkbuild $slkbuildver
 EOA
 if [ "$(grep -e "^#Maintainer\|^#Packager" $startdir/SLKBUILD)" ]; then
