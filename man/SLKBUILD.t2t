@@ -109,9 +109,12 @@ above or like you do in source and put each doc in quotes with a
 space between them.
 : **options**
 This is an array that takes certain arguments and affects how the build
-script operates. The options it takes are //keepla//, //noextract//,
-//nostrip//, //noautodotnew//, //nosrcpack//, //nolinkprepend//, //txz//,
-//tgz//, //tlz//, //tbz// and //tbr//. //keepla//, will override the default
+script operates. The options it takes are //keepla//, //makepkginternal//,
+//noextract//, //nostrip//, //noautodotnew//, //nosrcpack//,
+//nolinkprepend//, //txz//, //tgz//, //tlz//, //tbz// and //tbr//.
+//makepkginternal// will use an internal implementation of makepkg to
+create the package instead of the one provided by the Slackware pkgtools.
+//keepla//, will override the default
 behaviour of automatically removing libtool archives (.la files).
 //noextract// will prevent the build script from extracting tarballs
 automatically which is the default behavior. This is useful for

@@ -94,7 +94,8 @@ Same effect as **arch**.
 If set, points to an alternative **makepkg** executable. If it is not
 set and if the standard **/sbin/makepkg** Slackware tool is not present,
 or if it is set to **makepkg_internal**, an internal implementation is
-used.
+used. This is overriden to the internal implementation if the
+**makepkginternal** option within the **SLKBUILD**(5) meta-file is set.
 
 : **numjobs**
 This will set the number of jobs used by make in the //build()//
