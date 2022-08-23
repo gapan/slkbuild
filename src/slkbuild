@@ -264,7 +264,7 @@ if [ -n "$options" ]; then
                 ;;
             makepkginternal)
                 echo "Setting option makepkginternal"
-                MAKEPKGINTERNAL='1'
+                MAKEPKG=makepkg_internal
                 ;;
             nosrcpack)
                 echo "Setting option nosrcpack"
@@ -497,7 +497,6 @@ copy_build_script() {
 create_package() {
     ls -lR $startdir/pkg
     cd $startdir/pkg
-    [ $MAKEPKGINTERNAL -eq 1 ] && MAKEPKG="makepkg_internal"
     __MAKEPKG__ __LINKPREPEND__ -l y -c n $startdir/$package.__PKGEXT__
     cd $startdir
     md5sum $package.__PKGEXT__ > $startdir/$package.md5
