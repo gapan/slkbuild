@@ -651,7 +651,7 @@ extract_source() {
                 *application/x-bzip*)
                     cmd="bunzip2 -f" ;;
                 *application/x-xz*)
-                    cmd="xz -d -f" ;;
+                    cmd="tar xJf" ;;
                 *application/x-lzma*)
                     cmd="lzma -d -f" ;;
                 *application/x-rar*)
