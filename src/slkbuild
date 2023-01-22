@@ -42,9 +42,9 @@ generate_slkbuild() {
     EXTENSION="$1"
     ACTUALFILE=SLKBUILD
     [ -n "$EXTENSION" ] && ACTUALFILE+=".$EXTENSION"
-    TEMPLATE="/etc/slkbuild/$ACTUALFILE"
+    TEMPLATE="@sysconfdir@/slkbuild/$ACTUALFILE"
     if [ ! -f "$TEMPLATE" ]; then
-        err "No $TEMPLATE found in /etc, exiting."
+        err "No $TEMPLATE found in @sysconfdir@, exiting."
     elif [ -f "$startdir/SLKBUILD" ]; then
         echo "There is already a SLKBUILD in the current directory."
         echo -n "Generate SLKBUILD and overwrite it anyways? [y/n] "
