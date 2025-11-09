@@ -33,5 +33,5 @@ slackdesc=\
 
 build() {
 	cd $startdir/src/$pkgname-$pkgver
-	python setup.py install --prefix=/usr --root=$startdir/pkg
+	python3 setup.py install --prefix=/usr --root=$startdir/pkg
 }
