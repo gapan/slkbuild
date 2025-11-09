@@ -160,7 +160,7 @@ those aren't the ones that you want, you can override them using these
 variables.
 : **doinst()**
 This is the script that runs after a package is installed, so put any
-commands in here that you wan't to be run after the package is
+commands in here that you want to be run after the package is
 installed.
 : **douninst()**
 This is the script that runs when a package is uninstalled, after all
