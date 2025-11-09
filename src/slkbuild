@@ -167,7 +167,7 @@ fi
 if [ -f "${startdir}/SLKBUILD" ]; then
     unset pkgname pkgver pkgrel source extradepends options \
           dotnew url CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX \
-          slackdesc doinst build docs sourcetemplate
+          slackdesc doinst douninst build docs sourcetemplate
     . ${startdir}/SLKBUILD
 else
     err "No SLKBUILD found in directory, see slkbuild --help"
@@ -746,6 +746,22 @@ if [[ "$(grep '^doinst\(\)' $startdir/SLKBUILD)" ]]; then
     echo -e '}\n' >>$startdir/build-$pkgname.sh
 fi
 
+if [[ "$(grep '^douninst\(\)' $startdir/SLKBUILD)" ]]; then
+    echo 'setup_douninst() {' >> $startdir/build-$pkgname.sh
+    echo 'mkdir -p $startdir/pkg/var/lib/pkgtools/douninst.sh' >> $startdir/build-$pkgname.sh
+    echo 'cat <<"EODOUNINST" >>$startdir/pkg/var/lib/pkgtools/douninst.sh/$pkgname-$pkgver-$arch-$pkgrel' \
+        >>$startdir/build-$pkgname.sh
+    declare -f douninst | \
+        sed "s/\$pkgname\|\${pkgname}/$pkgname/g" | \
+        sed "s/\$pkgver\|\${pkgver}/$pkgver/g" | \
+        sed "s/\$arch\|\${arch}\|\$ARCH\|\${ARCH}/$arch/g" | \
+        sed "s/\$LIBDIRSUFFIX\|\${LIBDIRSUFFIX}/$LIBDIRSUFFIX/g" \
+        >>$startdir/build-$pkgname.sh
+    echo 'douninst' >>$startdir/build-$pkgname.sh
+    echo 'EODOUNINST' >>$startdir/build-$pkgname.sh
+    echo -e '}\n' >>$startdir/build-$pkgname.sh
+fi
+
 if [[ "$docs" ]]; then
 cat <<EOEXTRADOCS >> $startdir/build-$pkgname.sh
 copy_docs() {
@@ -882,6 +898,7 @@ EOEXECUTION2
 
 [[ "$dotnew" ]] && echo "setup_dotnew" >>$startdir/build-$pkgname.sh
 [[ "$(grep '^doinst\(\)' $startdir/SLKBUILD)" ]] && echo "setup_doinst" >>$startdir/build-$pkgname.sh
+[[ "$(grep '^douninst\(\)' $startdir/SLKBUILD)" ]] && echo "setup_douninst" >>$startdir/build-$pkgname.sh
 [[ "$docs" ]] && echo "copy_docs" >>$startdir/build-$pkgname.sh
 [[ $KEEPLA -ne 1 ]] && echo "remove_libtool_archives" >> \
    $startdir/build-$pkgname.sh
