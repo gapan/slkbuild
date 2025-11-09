@@ -15,7 +15,13 @@ source=()
 #CXXFLAGS=
 #options=('noextract')
 
+# doinst runs after a package is installed
 #doinst() {
+#
+#}
+
+# douninst runs when a package is uninstalled
+#douninst() {
 #
 #}
 
