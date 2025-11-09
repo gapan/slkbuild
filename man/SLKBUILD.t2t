@@ -162,6 +162,9 @@ variables.
 This is the script that runs after a package is installed, so put any
 commands in here that you wan't to be run after the package is
 installed.
+: **douninst()**
+This is the script that runs when a package is uninstalled, after all
+other package files have been removed.
 : **Custom Variables**
 Custom variables can also be added, so that they are used in the
 //build()// function. These variables should have a name that starts
