@@ -90,6 +90,10 @@ This will set the arch used for building the package. See also
 : **ARCH**
 Same effect as **arch**.
 
+: **BROTLI_QUALITY**
+The quality level for creating brotli compressed packages. It should be
+an integer between 0-11.
+
 : **MAKEPKG**
 If set, points to an alternative **makepkg** executable. If it is not
 set and if the standard **/sbin/makepkg** Slackware tool is not present,
