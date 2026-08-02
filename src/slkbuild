@@ -375,8 +375,8 @@ elif [ $arch == "armv7hl" ]; then
     SLKCFLAGS=${CFLAGS}
     LIBDIRSUFFIX=""
 elif [ $arch == "aarch64" ]; then
-    CFLAGS=${CFLAGS:-"-O2 -fPIC""}
-    CXXFLAGS=${CFLAGS:-"-O2 -fPIC""}
+    CFLAGS=${CFLAGS:-"-O2 -fPIC"}
+    CXXFLAGS=${CFLAGS:-"-O2 -fPIC"}
     SLKCFLAGS=${CFLAGS}
     LIBDIRSUFFIX="64"
 else
