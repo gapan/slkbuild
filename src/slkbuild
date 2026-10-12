@@ -1,7 +1,7 @@
 #!/bin/bash
 # vim:et:sta:sts=4:sw=4:ts=8:tw=79:
 
-slkbuildver=1.7
+slkbuildver=1.8
 startdir="$(pwd)"
 
 err()
