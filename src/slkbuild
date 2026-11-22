@@ -559,7 +559,13 @@ makepkg_internal() {
   case "$1" in
     *tbz) cmp="bzip2 -9c" ;;
     *tgz) cmp="gzip -9c" ;;
-    *tlz) cmp="lzma -c";;
+    *tlz)
+      if which plzip >/dev/null 2>&1; then
+        cmp="plzip -9 -c"
+      else
+        cmp="lzip -9 -c"
+      fi
+      ;;
     *txz) cmp="xz -c";;
     *tbr) cmp="brotli -c --quality=${BROTLI_QUALITY:-1}" ;;
     *) echo "Unknown compression type" >&2 ; exit 1 ;;
