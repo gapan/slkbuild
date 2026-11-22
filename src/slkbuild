@@ -35,7 +35,7 @@ OPTIONS:
 Report bugs or suggestions to <vlahavas~at~gmail~dot~com>.
 
 EOHELP
-exit 1
+exit 0
 }
 
 generate_slkbuild() {
