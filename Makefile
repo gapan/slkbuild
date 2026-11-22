@@ -18,4 +18,7 @@ man:
 clean:
 	make clean -C man
 
-.PHONY: all install man
+test:
+	tests/run.sh
+
+.PHONY: all install man clean test
