@@ -357,7 +357,7 @@ numjobs=${numjobs:-1}
 package=\$pkgname-\$pkgver-\$arch-$pkgrel
 EOVARIABLES
 
-grep -e "^_[a-zA-Z]*=[a-zA-Z]*" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
+grep -e "^_[a-zA-Z0-9_]\+=" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
 for (( I=0; I < ${#source[@]} ; I++)); do
         source[$I]="\"${source[$I]}\""
 done
