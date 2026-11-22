@@ -55,6 +55,15 @@ For cvs, svn and git builds, this variable is not technically necessary,
 you can leave it empty and fetch the svn or cvs source in
 //build()//. Or you can create a source tarball from cvs, svn or git
 and use that in the source array.
+If a url doesn't end in a proper file name, you can choose the name
+the file is saved as by appending //=filename// to it. Everything after
+the last //=// is used as the file name and everything before it as the
+url to download. E.g.:
+``` source=("http://url/download.php?id=42=mysoft-1.0.tar.gz")
+will download ``http://url/download.php?id=42`` and save it as
+//mysoft-1.0.tar.gz//. Note that this means a url that contains an //=//
+sign must always be given a file name like this, otherwise the part
+after its last //=// will be taken as the file name.
 : **slackdesc**
 This is an array where you put the description of the software you are
 packaging. On the first line put the package name followed by a space a
