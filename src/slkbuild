@@ -217,7 +217,12 @@ fi
 
 #Check for numerous commentaries
 NUMCOM=$(grep -e "^#[a-zA-Z]*=[a-zA-Z]*" ${startdir}/SLKBUILD | wc -l)
-[[ $NUMCOM -ge 2 ]] && echo "WARNING: You appear to have too many commented variables, you should look into it."
+if [[ $NUMCOM -ge 2 ]]; then
+    echo "WARNING: You appear to have too many commented variables, you should look into it."
+    echo "You may want to edit the SLKBUILD templates in @sysconfdir@/slkbuild"
+    echo "with your own information (e.g. your Packager line) and remove"
+    echo "what you don't need, so that new SLKBUILDs start from those."
+fi
 
 #source sanity
 #A source can be given as URL=filename, in which case URL is downloaded

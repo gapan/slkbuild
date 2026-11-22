@@ -94,3 +94,14 @@ test_missing_local_source() {
     assert_rc 1 slkbuild
     assert_contains slkbuild.out "does not appear to be a url"
 }
+
+test_commented_variables_warning() {
+    write_slkbuild '#url=
+#CFLAGS='
+    assert_rc 0 slkbuild
+    assert_contains slkbuild.out "WARNING: You appear to have too many commented variables"
+    assert_contains slkbuild.out "edit the SLKBUILD templates in $REPO_DIR/etc"
+    write_slkbuild '#url='
+    assert_rc 0 slkbuild
+    assert_not_contains slkbuild.out "commented variables"
+}
