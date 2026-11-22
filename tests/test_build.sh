@@ -522,3 +522,29 @@ test_man_pages_hard_links() {
         assert_eq "$(zcat root/usr/man/$page)" a "$page contents"
     done
 }
+
+# Symlinks are turned into doinst.sh code, check that special characters
+# survive with both makepkg implementations
+test_symlinks_special_characters() {
+    need fakeroot
+    for mk in makepkginternal ""; do
+        [ -z "$mk" ] && [ ! -x /sbin/makepkg ] && continue
+        rm -rf root pkg src foo-1-*
+        write_slkbuild "options=($mk)" '    cd $startdir/pkg/usr/bin
+    echo t > "my target"
+    ln -s foo "my foo"
+    ln -s "my target" "it'"'"'s (a) \$link;&"
+    mkdir -p "$startdir/pkg/usr/share/a dir"
+    ln -s ../../bin/foo "$startdir/pkg/usr/share/a dir/link"'
+        assert_rc 0 build_pkg
+        local pkg="$PWD/$(pkg_file)"
+        mkdir root
+        (cd root && tar xf "$pkg" && sh install/doinst.sh) > doinst.out 2>&1 ||
+            { cat doinst.out; fail "${mk:-makepkg}: doinst.sh failed"; }
+        assert_eq "$(readlink "root/usr/bin/my foo")" foo "${mk:-makepkg}: my foo"
+        assert_eq "$(readlink "root/usr/bin/it's (a) \$link;&")" "my target" \
+            "${mk:-makepkg}: special characters"
+        assert_eq "$(readlink "root/usr/share/a dir/link")" ../../bin/foo \
+            "${mk:-makepkg}: link in a dir with a space"
+    done
+}

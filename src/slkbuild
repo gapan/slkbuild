@@ -609,7 +609,13 @@ makepkg_internal() {
   # Change any symlinks into shell script code
   if find * -type l | grep -qm1 .; then
     mkdir -p install
-    find * -type l -printf '( cd %h ; rm -rf %f )\n( cd %h ; ln -sf %l %f )\n' -delete > install/symlinks
+    # Escape special characters the same way Slackware's makepkg does
+    find * -type l -printf '%h\t%f\t%l\n' | LC_COLLATE=C sort | \
+      sed 's,[ "#$&\x27()*;<>?[\\`{|~],\\&,g' | \
+      awk -F'\t' '{ print "( cd " $1 " ; rm -rf " $2 " )"
+                    print "( cd " $1 " ; ln -sf " $3 " " $2 " )" }' \
+      > install/symlinks
+    find * -type l -delete
     if [ -f "install/doinst.sh" ]; then
       printf '\n' | cat - install/doinst.sh >> install/symlinks
     fi
