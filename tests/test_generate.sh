@@ -139,3 +139,17 @@ test_doinst_variable_substitution() {
     assert_contains build-foo.sh \
         'echo "$ARCHIVE $architecture $pkgver_major $pkgnamefile"'
 }
+
+test_packager_lines_copied() {
+    for hdr in "#Packager: A <a@b>" "# Packager: A <a@b>" \
+               "#Maintainer: A <a@b>" "# Maintainer: A <a@b>"; do
+        write_slkbuild
+        sed -i "1c$hdr" SLKBUILD
+        echo "${hdr%%[PM]*}Former Packager(s): B <b@c>" >> SLKBUILD
+        assert_rc 0 slkbuild
+        assert_eq "$(sed -n 3p build-foo.sh)" "$hdr" "packager line"
+        assert_eq "$(sed -n 4p build-foo.sh)" "${hdr%%[PM]*}Former Packager(s): B <b@c>" \
+            "former packager line"
+        bash -n build-foo.sh || fail "syntax error"
+    done
+}

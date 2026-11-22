@@ -333,11 +333,11 @@ cat <<EOA > ${startdir}/build-${pkgname}.sh
 #!/bin/bash -p
 #Automatically Created by slkbuild $slkbuildver
 EOA
-if [ "$(grep -e "^#Maintainer\|^#Packager" $startdir/SLKBUILD)" ]; then
-    grep -e "^#Maintainer\|^#Packager" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
-fi
-[[ "$(grep -e "^#Former Maintainer(s)\|^#Former Packager(s)" $startdir/SLKBUILD)" ]] &&
-    grep -e "^#Former Maintainer(s)\|^#Former Packager(s)" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
+#Both "#Packager:" and "# Packager:" are accepted
+grep -e "^# \?\(Maintainer\|Packager\)" \
+    $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
+grep -e "^# \?Former \(Maintainer\|Packager\)(s)" \
+    $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
 [[ "$url" ]] && echo "#url: $url" >> $startdir/build-$pkgname.sh
 
 ##########Variables START
