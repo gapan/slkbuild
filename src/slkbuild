@@ -265,10 +265,9 @@ fi
 #########Sanity Tests End########################################
 
 #options=()
+#These are only set through options=(), not inherited from the environment
+unset KEEPLA NOSRCPACK NOEXTRACT NOSTRIP NOAUTODOTNEW
 if [ -n "$options" ]; then
-    unset NOEXTRACT
-    unset NOSTRIP
-    unset NOAUTODOTNEW
     for opts in ${options[@]}; do
         case $opts in
             keepla)
