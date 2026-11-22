@@ -821,11 +821,11 @@ cat <<POSTCHECKS>>$startdir/build-$pkgname.sh
 post_checks(){
     # Ideas taken from src2pkg :)
     if [ -d "\$startdir/pkg/usr/doc/\$pkgname-\$pkgver" ]; then
+        # remove the doc dirs if they contain no files (only empty dirs)
         for DIRS in usr/doc/\$pkgname-\$pkgver usr/doc; do
-            cd \$startdir/pkg/\$DIRS
-            if [[ \$(find . -type f) = "" ]] ; then
-                cd ..
-                rmdir \$DIRS
+            if [ -d "\$startdir/pkg/\$DIRS" ] && \\
+                [[ \$(find "\$startdir/pkg/\$DIRS" -type f) = "" ]] ; then
+                find "\$startdir/pkg/\$DIRS" -depth -type d -empty -delete
             fi
         done
     fi
