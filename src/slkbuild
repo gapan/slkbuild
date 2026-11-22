@@ -371,27 +371,27 @@ echo "docs=(${docs[@]})" >> $startdir/build-$pkgname.sh
 
 if [ $arch == "x86_64" ]; then
     CFLAGS=${CFLAGS:-"-O2 -fPIC"}
-    CXXFLAGS=${CFLAGS:-"-O2 -fPIC"}
+    CXXFLAGS=${CXXFLAGS:-$CFLAGS}
     SLKCFLAGS=${CFLAGS}
     LIBDIRSUFFIX="64"
 elif [ $arch == "i486" ] || [ $arch == "i586" ] || [ $arch == "i686" ]; then
     CFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
-    CXXFLAGS=${CFLAGS:-"-O2 -march=$arch -mtune=i686"}
+    CXXFLAGS=${CXXFLAGS:-$CFLAGS}
     SLKCFLAGS=${CFLAGS}
     LIBDIRSUFFIX=""
 elif [ $arch == "armv7hl" ]; then
     CFLAGS=${CFLAGS:-"-O2 -march=armv7-a -mfpu=vfpv3-d16"}
-    CXXFLAGS=${CFLAGS:-"-O2 -march=armv7-a -mfpu=vfpv3-d16"}
+    CXXFLAGS=${CXXFLAGS:-$CFLAGS}
     SLKCFLAGS=${CFLAGS}
     LIBDIRSUFFIX=""
 elif [ $arch == "aarch64" ]; then
     CFLAGS=${CFLAGS:-"-O2 -fPIC"}
-    CXXFLAGS=${CFLAGS:-"-O2 -fPIC"}
+    CXXFLAGS=${CXXFLAGS:-$CFLAGS}
     SLKCFLAGS=${CFLAGS}
     LIBDIRSUFFIX="64"
 else
     CFLAGS=${CFLAGS:-"-O2 -march=$arch"}
-    CXXFLAGS=${CFLAGS:-"-O2 -march=$arch"}
+    CXXFLAGS=${CXXFLAGS:-$CFLAGS}
     SLKCFLAGS=${CFLAGS}
     LIBDIRSUFFIX=""
 fi
