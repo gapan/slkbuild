@@ -680,7 +680,7 @@ extract_source() {
                     cmd="unzip" ;;
                 *application/zip*)
                     cmd="unzip" ;;
-                *application/x-gzip*)
+                *application/x-gzip*|*application/gzip*)
                     cmd="gunzip -d -f" ;;
                 *application/x-bzip*)
                     cmd="bunzip2 -f" ;;
