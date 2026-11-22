@@ -75,7 +75,7 @@ generate_slkbuild() {
 unset EXECUTE
 unset GENERATE
 unset REMOVEDIRS
-unset ARG1 ARG2
+unset PROTOTYPE
 
 #If PKGEXT or PKGTYPE is set, use that as the package format. PKGEXT has
 #priority over PKGTYPE. Otherwise set the default package format to .txz
@@ -109,15 +109,13 @@ LONGOPTS="help,version,x-and-clean,execute,generate::,clean-dirs"
 # separate word. The quotes around `$@' are essential!
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
 #TEMP=`getopt -o $SHORTOPTS --long $LONGOPTS -n build --"$@"`
-TEMP=$(getopt -o $SHORTOPTS --long $LONGOPTS -n "$progname" -- "$@")
-
-[ -n $1 ] && ARG1=$1
-[ -n $2 ] && ARG2=$2
+TEMP=$(getopt -o $SHORTOPTS --long $LONGOPTS -n slkbuild -- "$@") ||
+    err "Incorrect usage, see slkbuild --help"
 
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
 while [ $# -gt 0 ]; do
-    case $ARG1 in
+    case $1 in
         '-h'|'--help')
             help_msg
             exit
@@ -131,8 +129,9 @@ while [ $# -gt 0 ]; do
             ;;
         '-g'|'--generate')
             GENERATE='1'
-            generate_slkbuild "$ARG2"
-            exit
+            # optional argument; getopt passes '' when it was not attached
+            PROTOTYPE="$2"
+            shift
             ;;
         '-c'|'--clean-dirs')
             REMOVEDIRS='1'
@@ -141,16 +140,27 @@ while [ $# -gt 0 ]; do
             echo "slkbuild version: $slkbuildver"
             exit
             ;;
-        '')
+        --)
+            shift
+            break
             ;;
-                --)
-                        break
-                        ;;
         *)
             err "Incorrect usage, see slkbuild --help"
     esac
     shift
 done
+
+if [ "$GENERATE" = "1" ]; then
+    # Support "slkbuild -g python" (prototype as a separate argument)
+    if [ -z "$PROTOTYPE" ] && [ $# -gt 0 ]; then
+        PROTOTYPE="$1"
+        shift
+    fi
+    [ $# -gt 0 ] && err "Incorrect usage, see slkbuild --help"
+    generate_slkbuild "$PROTOTYPE"
+    exit
+fi
+[ $# -gt 0 ] && err "Incorrect usage, see slkbuild --help"
 
 #If arch is not set, determine it automatically
 if [ -z "$arch" ]; then
