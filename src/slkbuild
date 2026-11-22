@@ -178,6 +178,7 @@ if [ -f "${startdir}/SLKBUILD" ]; then
     unset pkgname pkgver pkgrel source extradepends options \
           dotnew url CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX \
           slackdesc doinst douninst build docs sourcetemplate
+    functions_before=$(declare -F | awk '{print $3}')
     . ${startdir}/SLKBUILD
 else
     err "No SLKBUILD found in directory, see slkbuild --help"
@@ -731,6 +732,12 @@ extract_source() {
 EOEXTRACTSOURCES
 fi
 
+#Copy custom functions (names starting with _) defined in the SLKBUILD
+for func in $(declare -F | awk '{print $3}' | grep '^_'); do
+    if ! grep -qx -- "$func" <<< "$functions_before"; then
+        declare -f $func >> $startdir/build-$pkgname.sh
+    fi
+done
 declare -f build >> $startdir/build-$pkgname.sh
 
 cat <<EOM >>$startdir/build-$pkgname.sh

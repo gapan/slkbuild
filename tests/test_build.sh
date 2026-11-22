@@ -412,3 +412,28 @@ _after=1' '    printf "%s|" "${_files[@]}" "$_text" "$_path" "$_after" > $startd
     assert_eq "$(cat pkg/usr/bin/foo)" "a|b c|line 1
 line 2|$PWD/src/x|1|"
 }
+
+test_custom_functions() {
+    need fakeroot
+    write_slkbuild '_greet() {
+    echo "hello $1" > $startdir/pkg/usr/bin/foo
+}
+function _second {
+    _greet "from $pkgname"
+}
+notcopied() {
+    true
+}' '    _second || return 1'
+    assert_rc 0 slkbuild
+    assert_not_contains build-foo.sh "^notcopied"
+    assert_rc 0 build_pkg
+    assert_eq "$(cat pkg/usr/bin/foo)" "hello from foo"
+}
+
+test_custom_functions_not_taken_from_environment() {
+    _fromenv() { true; }
+    export -f _fromenv
+    write_slkbuild
+    assert_rc 0 slkbuild
+    assert_not_contains build-foo.sh "_fromenv"
+}

@@ -178,6 +178,10 @@ other package files have been removed.
 Custom variables can also be added, so that they are used in the
 //build()// function. These variables should have a name that starts
 with an underscore.
+: **Custom Functions**
+Custom functions can also be added and called from the //build()//
+function. Like custom variables, their name should start with an
+underscore, e.g. //_fix_paths()//.
 
 
 == AUTHOR ==
