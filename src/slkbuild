@@ -787,8 +787,8 @@ fi
 
 if declare -F douninst >/dev/null; then
     echo 'setup_douninst() {' >> $startdir/build-$pkgname.sh
-    echo 'mkdir -p $startdir/pkg/var/lib/pkgtools/douninst.sh' >> $startdir/build-$pkgname.sh
-    echo 'cat <<"EODOUNINST" >>$startdir/pkg/var/lib/pkgtools/douninst.sh/$pkgname-$pkgver-$arch-$pkgrel' \
+    # installpkg moves this to /var/lib/pkgtools/douninst.sh/<package name>
+    echo 'cat <<"EODOUNINST" >>$startdir/pkg/install/douninst.sh' \
         >>$startdir/build-$pkgname.sh
     declare -f douninst | \
         sed "s/\$pkgname\>\|\${pkgname}/$pkgname/g" | \
