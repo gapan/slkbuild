@@ -474,3 +474,29 @@ docs=("readme")'
     assert_rc 0 build_pkg
     assert_eq "$(cat pkg/usr/doc/foo-1/README)" "doc readme"
 }
+
+test_docs_none_found() {
+    need fakeroot
+    mkdir foo-1
+    echo x > foo-1/main.c
+    tar czf foo-1.tar.gz foo-1
+    rm -r foo-1
+    write_slkbuild 'source=("foo-1.tar.gz")
+docs=("readme" "changelog")'
+    assert_rc 0 build_pkg
+    assert_no_file pkg/usr/doc
+}
+
+test_docs_zero_length_removed() {
+    need fakeroot
+    mkdir foo-1
+    echo r > foo-1/README
+    : > foo-1/NEWS
+    tar czf foo-1.tar.gz foo-1
+    rm -r foo-1
+    write_slkbuild 'source=("foo-1.tar.gz")
+docs=("readme" "news")'
+    assert_rc 0 build_pkg
+    assert_in_pkg usr/doc/foo-1/README
+    assert_not_in_pkg usr/doc/foo-1/NEWS
+}

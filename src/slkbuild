@@ -983,13 +983,14 @@ if [ ! "$?" = "0" ]; then
     exit 2
 fi
 create_slackdesc
-post_checks
 EOEXECUTION2
+# copy the docs before post_checks, which cleans up the doc dir
+[[ "$docs" ]] && echo "copy_docs" >>$startdir/build-$pkgname.sh
+echo "post_checks" >>$startdir/build-$pkgname.sh
 
 [[ "$dotnew" ]] && echo "setup_dotnew" >>$startdir/build-$pkgname.sh
 declare -F doinst >/dev/null && echo "setup_doinst" >>$startdir/build-$pkgname.sh
 declare -F douninst >/dev/null && echo "setup_douninst" >>$startdir/build-$pkgname.sh
-[[ "$docs" ]] && echo "copy_docs" >>$startdir/build-$pkgname.sh
 [[ $KEEPLA -ne 1 ]] && echo "remove_libtool_archives" >> \
    $startdir/build-$pkgname.sh
 
