@@ -93,3 +93,16 @@ test_failed_download() {
     assert_contains slkbuild.out "Download failed"
     assert_no_file foo-1.tar.gz
 }
+
+test_failed_download_in_build_script() {
+    need fakeroot wget
+    write_slkbuild 'source=("http://127.0.0.1:1/foo-1.tar.gz")'
+    # have the file around when generating, so that slkbuild doesn't try
+    # to download it, and let the build script do it
+    echo x > foo-1.tar.gz
+    assert_rc 0 slkbuild
+    rm foo-1.tar.gz
+    assert_rc 2 fakeroot ./build-foo.sh > build.out 2>&1
+    assert_contains build.out "Download failed"
+    assert_no_file foo-1.tar.gz
+}

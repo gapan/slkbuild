@@ -642,6 +642,7 @@ prepare_directory() {
                 wget -c --no-check-certificate "\${SOURCES%=*}" -O \$file
                 if [ ! "\$?" == "0" ]; then
                     echo "Download failed"
+                    rm -f \$file
                     exit 2
                 fi 
             else
