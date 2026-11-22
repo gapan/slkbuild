@@ -436,7 +436,8 @@ clean_old_builds () {
 
 set_pre_permissions() {
     cd $startdir/src
-    find -L . \( \
+    # Don't follow symlinks, they may point outside of the build directory
+    find . \( -type f -o -type d \) \( \
         -perm 777 \
         -o -perm 775 \
         -o -perm 750 \
@@ -445,7 +446,7 @@ set_pre_permissions() {
         -o -perm 511 \) \
         -print0 | \
         xargs -0r chmod 755
-    find -L . \( \
+    find . \( -type f -o -type d \) \( \
         -perm 666 \
         -o -perm 664 \
         -o -perm 640 \
@@ -501,15 +502,15 @@ set_post_permissions() {
     for DIRS in usr/share/icons usr/doc; do
         if [ -d "$startdir/pkg/$DIRS" ]; then
             if [ "$DIRS" == "usr/doc" ]; then
-                find -L $startdir/pkg/$DIRS -type f -print0 | \
+                find $startdir/pkg/$DIRS -type f -print0 | \
                     xargs -0r chmod 644
-                find -L $startdir/pkg/$DIRS -type d -print0 | \
+                find $startdir/pkg/$DIRS -type d -print0 | \
                     xargs -0r chmod 755
             fi
         fi
         [ -d $startdir/pkg/$DIRS ] && chown root:root -R $startdir/pkg/$DIRS
     done
-    [ -d $startdir/pkg/usr/bin ] && find $startdir/pkg/usr/bin -user root -group bin -exec chown root:root {} \;
+    [ -d $startdir/pkg/usr/bin ] && find $startdir/pkg/usr/bin -user root -group bin -exec chown -h root:root {} \;
 }
 
 copy_build_script() {

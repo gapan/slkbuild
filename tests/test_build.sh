@@ -357,3 +357,41 @@ test_rebuild_cleans_previous_build() {
     assert_rc 0 build_pkg
     assert_not_in_pkg usr/bin/extra
 }
+
+test_permissions_normalized() {
+    need fakeroot
+    mkdir foo-1
+    echo r > foo-1/README; chmod 600 foo-1/README
+    echo x > foo-1/run.sh; chmod 700 foo-1/run.sh
+    chmod 750 foo-1
+    tar cf foo-1.tar foo-1
+    rm -r foo-1
+    write_slkbuild 'source=("foo-1.tar")' '    mkdir -p $startdir/pkg/usr/doc/foo-1
+    cp $startdir/src/foo-1/README $startdir/pkg/usr/doc/foo-1/
+    chmod 600 $startdir/pkg/usr/doc/foo-1/README
+    chmod 700 $startdir/pkg/usr/doc/foo-1'
+    assert_rc 0 build_pkg
+    assert_eq "$(stat -c %a src/foo-1)" 755 "src dir mode"
+    assert_eq "$(stat -c %a src/foo-1/README)" 644 "src file mode"
+    tar tvf "$(pkg_file)" usr/doc/foo-1/README | grep -q "^-rw-r--r--" ||
+        fail "doc file is not 644"
+    tar tvf "$(pkg_file)" usr/doc/foo-1/ | grep -q "^drwxr-xr-x" ||
+        fail "doc dir is not 755"
+}
+
+# Symlinks may point outside of the build directory, they must not be
+# followed when fixing permissions
+test_permissions_dont_follow_symlinks() {
+    need fakeroot
+    mkdir outside
+    echo secret > outside/private.key
+    chmod 600 outside/private.key
+    mkdir t
+    ln -s "$PWD/outside" t/link
+    tar cf evil.tar t
+    rm -r t
+    write_slkbuild 'source=("evil.tar")' "    mkdir -p \$startdir/pkg/usr/doc/foo-1
+    ln -s $PWD/outside/private.key \$startdir/pkg/usr/doc/foo-1/LICENSE"
+    assert_rc 0 build_pkg
+    assert_eq "$(stat -c %a outside/private.key)" 600 "file outside mode"
+}
