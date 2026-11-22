@@ -47,17 +47,17 @@ generate_slkbuild() {
         err "No $TEMPLATE found in @sysconfdir@, exiting."
     elif [ -f "$startdir/SLKBUILD" ]; then
         echo "There is already a SLKBUILD in the current directory."
-        echo -n "Generate SLKBUILD and overwrite it anyways? [y/n] "
+        echo -n "Generate SLKBUILD and overwrite it anyways? [y/N] "
         while :; do #infinitely
-            read answer
+            read answer || answer='n'
             case $answer in
-                ''|'y'|'Y'|'yes'|'YES')
+                'y'|'Y'|'yes'|'YES')
                     rm $startdir/SLKBUILD
                     cp $TEMPLATE $startdir/SLKBUILD
                     echo "SLKBUILD created."
                     exit
                     ;;
-                'n'|'N'|'no'|'NO')
+                ''|'n'|'N'|'no'|'NO')
                     echo "Not creating SLKBUILD, exiting."
                     exit
                     ;;
