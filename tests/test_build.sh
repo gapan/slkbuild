@@ -437,3 +437,40 @@ test_custom_functions_not_taken_from_environment() {
     assert_rc 0 slkbuild
     assert_not_contains build-foo.sh "_fromenv"
 }
+
+# docs=() must use the shallowest match, not whatever find returns last
+test_docs_shallowest_match() {
+    need fakeroot
+    for order in "a/vendored/lib z" "z a/vendored"; do
+        rm -rf foo-1 foo-1.tar.gz pkg src
+        mkdir foo-1
+        echo "MAIN README" > foo-1/README
+        echo "lowercase readme" > foo-1/readme
+        echo "main changes" > foo-1/ChangeLog
+        for d in $order; do
+            mkdir -p foo-1/$d
+            echo "readme from $d" > foo-1/$d/README
+            echo "changes from $d" > foo-1/$d/ChangeLog
+        done
+        tar czf foo-1.tar.gz foo-1
+        rm -r foo-1
+        write_slkbuild 'source=("foo-1.tar.gz")
+docs=("readme" "changelog")'
+        assert_rc 0 build_pkg
+        assert_eq "$(cat pkg/usr/doc/foo-1/README)" "MAIN README" "README ($order)"
+        assert_eq "$(cat pkg/usr/doc/foo-1/readme)" "lowercase readme" "readme ($order)"
+        assert_eq "$(cat pkg/usr/doc/foo-1/ChangeLog)" "main changes" "ChangeLog ($order)"
+    done
+}
+
+test_docs_only_in_subdirectory() {
+    need fakeroot
+    mkdir -p foo-1/doc
+    echo "doc readme" > foo-1/doc/README
+    tar czf foo-1.tar.gz foo-1
+    rm -r foo-1
+    write_slkbuild 'source=("foo-1.tar.gz")
+docs=("readme")'
+    assert_rc 0 build_pkg
+    assert_eq "$(cat pkg/usr/doc/foo-1/README)" "doc readme"
+}

@@ -843,13 +843,22 @@ if declare -F douninst >/dev/null; then
 fi
 
 if [[ "$docs" ]]; then
-cat <<EOEXTRADOCS >> $startdir/build-$pkgname.sh
+cat <<"EOEXTRADOCS" >> $startdir/build-$pkgname.sh
 copy_docs() {
-    for stuff in \${docs[@]}; do
-        if [ ! -d "\$startdir/pkg/usr/doc/\$pkgname-\$pkgver" ]; then
-            mkdir -p \$startdir/pkg/usr/doc/\$pkgname-\$pkgver
-        fi
-        find \$startdir/src -type f -iname "\$stuff" -exec cp -LR '{}' \$startdir/pkg/usr/doc/\$pkgname-\$pkgver \;
+    local docdir=$startdir/pkg/usr/doc/$pkgname-$pkgver
+    local -A copied
+    mkdir -p $docdir
+    for stuff in ${docs[@]}; do
+        # Source trees often have files with the same name in
+        # subdirectories (e.g. vendored code), so use the shallowest match
+        # for each file name.
+        while IFS=$'\t' read -r depth doc; do
+            name=$(basename "$doc")
+            [ -n "${copied[$name]}" ] && continue
+            cp -L "$doc" $docdir/
+            copied[$name]=1
+        done < <(find $startdir/src -type f -iname "$stuff" -printf '%d\t%p\n' |
+                 sort -t $'\t' -k1,1n -k2,2)
     done
 }
 EOEXTRADOCS
