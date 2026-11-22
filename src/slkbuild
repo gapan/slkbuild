@@ -468,7 +468,10 @@ remove_libtool_archives() {
 gzip_man_and_info_pages() {
     for DOCS in man info; do
         if [ -d "$startdir/pkg/usr/share/$DOCS" ]; then
-            mv $startdir/pkg/usr/share/$DOCS $startdir/pkg/usr/$DOCS
+            # merge, in case usr/$DOCS already exists too
+            mkdir -p $startdir/pkg/usr/$DOCS
+            cp -a $startdir/pkg/usr/share/$DOCS/. $startdir/pkg/usr/$DOCS/
+            rm -rf $startdir/pkg/usr/share/$DOCS
             if [[ ! "$(ls $startdir/pkg/usr/share)" ]]; then
                 rm -rf $startdir/pkg/usr/share
             fi
