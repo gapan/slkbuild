@@ -760,10 +760,10 @@ if declare -F doinst >/dev/null; then
     echo 'cat <<"EODOINST" >>$startdir/pkg/install/doinst.sh' \
         >>$startdir/build-$pkgname.sh
     declare -f doinst | \
-        sed "s/\$pkgname\|\${pkgname}/$pkgname/g" | \
-        sed "s/\$pkgver\|\${pkgver}/$pkgver/g" | \
-        sed "s/\$arch\|\${arch}\|\$ARCH\|\${ARCH}/$arch/g" | \
-        sed "s/\$LIBDIRSUFFIX\|\${LIBDIRSUFFIX}/$LIBDIRSUFFIX/g" \
+        sed "s/\$pkgname\>\|\${pkgname}/$pkgname/g" | \
+        sed "s/\$pkgver\>\|\${pkgver}/$pkgver/g" | \
+        sed "s/\$arch\>\|\${arch}\|\$ARCH\>\|\${ARCH}/$arch/g" | \
+        sed "s/\$LIBDIRSUFFIX\>\|\${LIBDIRSUFFIX}/$LIBDIRSUFFIX/g" \
         >>$startdir/build-$pkgname.sh
     echo 'doinst' >>$startdir/build-$pkgname.sh
     echo 'EODOINST' >>$startdir/build-$pkgname.sh
@@ -776,10 +776,10 @@ if declare -F douninst >/dev/null; then
     echo 'cat <<"EODOUNINST" >>$startdir/pkg/var/lib/pkgtools/douninst.sh/$pkgname-$pkgver-$arch-$pkgrel' \
         >>$startdir/build-$pkgname.sh
     declare -f douninst | \
-        sed "s/\$pkgname\|\${pkgname}/$pkgname/g" | \
-        sed "s/\$pkgver\|\${pkgver}/$pkgver/g" | \
-        sed "s/\$arch\|\${arch}\|\$ARCH\|\${ARCH}/$arch/g" | \
-        sed "s/\$LIBDIRSUFFIX\|\${LIBDIRSUFFIX}/$LIBDIRSUFFIX/g" \
+        sed "s/\$pkgname\>\|\${pkgname}/$pkgname/g" | \
+        sed "s/\$pkgver\>\|\${pkgver}/$pkgver/g" | \
+        sed "s/\$arch\>\|\${arch}\|\$ARCH\>\|\${ARCH}/$arch/g" | \
+        sed "s/\$LIBDIRSUFFIX\>\|\${LIBDIRSUFFIX}/$LIBDIRSUFFIX/g" \
         >>$startdir/build-$pkgname.sh
     echo 'douninst' >>$startdir/build-$pkgname.sh
     echo 'EODOUNINST' >>$startdir/build-$pkgname.sh
