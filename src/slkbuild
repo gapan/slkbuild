@@ -663,12 +663,17 @@ if [ -z "$NOSTRIP" ]; then
 cat <<"EOREDUNDANT1" >> $startdir/build-$pkgname.sh
 strip_binaries() {
     cd $startdir/pkg
-    find . -print0 | \
-        xargs -0r file | \
-        grep -e "executable" -e "shared object" | \
-        grep ELF | \
-        cut -f 1 -d : | \
-        xargs strip --strip-unneeded 2> /dev/null || true
+    # file -0 separates file names with a NUL, so that names with spaces
+    # or colons work
+    find . -type f -print0 | \
+        xargs -0r file -0 | \
+        while IFS= read -r -d '' binary && IFS= read -r desc; do
+            case "$desc" in
+                *ELF*executable*|*ELF*"shared object"*)
+                    printf '%s\0' "$binary" ;;
+            esac
+        done | \
+        xargs -0r strip --strip-unneeded 2> /dev/null || true
 }
 EOREDUNDANT1
 fi

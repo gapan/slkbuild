@@ -147,6 +147,22 @@ options=("nostrip")' \
     file pkg/usr/bin/hello | grep -q "not stripped" || fail "stripped"
 }
 
+test_strip_binaries_special_names() {
+    need fakeroot gcc
+    printf 'int main(void){return 0;}\n' > hello.c
+    write_slkbuild 'source=("hello.c")' \
+'    for name in "my prog" "a:b" plain; do
+        gcc -g -o "$startdir/pkg/usr/bin/$name" $startdir/src/hello.c
+    done
+    gcc -g -shared -fPIC -o "$startdir/pkg/usr/bin/lib x.so" $startdir/src/hello.c'
+    assert_rc 0 build_pkg
+    for name in "my prog" "a:b" plain "lib x.so"; do
+        file "pkg/usr/bin/$name" | grep -q "not stripped" &&
+            fail "$name not stripped"
+    done
+    return 0
+}
+
 test_libtool_archives_removed() {
     need fakeroot
     body='    mkdir -p $startdir/pkg/usr/lib64
