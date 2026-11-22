@@ -210,7 +210,7 @@ fi
 
 if [ "$(grep -e "^#Maintainer: Name <email@address.com>\|^#Packager: Name <email@address.com>" $startdir/SLKBUILD)" ]; then
       err "Packager or Maintainer isn't set in SLKBUILD, exiting"
-elif [ ! "$(grep -e "^#Maintainer:\|\|^# Maintainer:\|^#Packager:\|^# Packager:" $startdir/SLKBUILD)" ]; then
+elif [ ! "$(grep -e "^#Maintainer:\|^# Maintainer:\|^#Packager:\|^# Packager:" $startdir/SLKBUILD)" ]; then
       err "Please specify #Packager: or #Maintainer: in first line of your SLKBUILD. Exiting."
 fi
 
