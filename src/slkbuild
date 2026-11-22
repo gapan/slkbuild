@@ -198,7 +198,7 @@ fi
 #check for source template
 
 #does build() exist?
-[[ ! "$(grep '^build\(\)' ${startdir}/SLKBUILD)" ]] &&
+! declare -F build >/dev/null &&
     err "No build() function found"
 
 #check that variables are sane
@@ -752,7 +752,7 @@ EODOTNEW
 EOQ
 fi
 
-if [[ "$(grep '^doinst\(\)' $startdir/SLKBUILD)" ]]; then
+if declare -F doinst >/dev/null; then
     echo 'setup_doinst() {' >> $startdir/build-$pkgname.sh
     echo 'cat <<"EODOINST" >>$startdir/pkg/install/doinst.sh' \
         >>$startdir/build-$pkgname.sh
@@ -767,7 +767,7 @@ if [[ "$(grep '^doinst\(\)' $startdir/SLKBUILD)" ]]; then
     echo -e '}\n' >>$startdir/build-$pkgname.sh
 fi
 
-if [[ "$(grep '^douninst\(\)' $startdir/SLKBUILD)" ]]; then
+if declare -F douninst >/dev/null; then
     echo 'setup_douninst() {' >> $startdir/build-$pkgname.sh
     echo 'mkdir -p $startdir/pkg/var/lib/pkgtools/douninst.sh' >> $startdir/build-$pkgname.sh
     echo 'cat <<"EODOUNINST" >>$startdir/pkg/var/lib/pkgtools/douninst.sh/$pkgname-$pkgver-$arch-$pkgrel' \
@@ -918,8 +918,8 @@ post_checks
 EOEXECUTION2
 
 [[ "$dotnew" ]] && echo "setup_dotnew" >>$startdir/build-$pkgname.sh
-[[ "$(grep '^doinst\(\)' $startdir/SLKBUILD)" ]] && echo "setup_doinst" >>$startdir/build-$pkgname.sh
-[[ "$(grep '^douninst\(\)' $startdir/SLKBUILD)" ]] && echo "setup_douninst" >>$startdir/build-$pkgname.sh
+declare -F doinst >/dev/null && echo "setup_doinst" >>$startdir/build-$pkgname.sh
+declare -F douninst >/dev/null && echo "setup_douninst" >>$startdir/build-$pkgname.sh
 [[ "$docs" ]] && echo "copy_docs" >>$startdir/build-$pkgname.sh
 [[ $KEEPLA -ne 1 ]] && echo "remove_libtool_archives" >> \
    $startdir/build-$pkgname.sh
