@@ -851,10 +851,11 @@ post_checks(){
             find . -type f -size 0 -exec rm -f {} \;
         fi
     fi
-    # check if we need to add code to handle info pages
-    if [[ -d \$startdir/pkg/usr/info ]] && ! grep -qs install-info \$startdir/pkg/install/doinst.sh ; then
+    # check if we need to add code to handle info pages. They may still be
+    # in usr/share/info, they are moved to usr/info later on.
+    INFO_LIST=\$(ls -1 \$startdir/pkg/usr/info \$startdir/pkg/usr/share/info 2>/dev/null | grep -v -e '^dir\(\.gz\)\?\$' -e ':\$' -e '^\$')
+    if [[ "\$INFO_LIST" ]] && ! grep -qs install-info \$startdir/pkg/install/doinst.sh ; then
         echo "Found info files - Adding install-info command to doinst.sh"
-        INFO_LIST=\$(ls -1 \$startdir/pkg/usr/info)
         echo "" >> \$startdir/pkg/install/doinst.sh
         echo "if [ -x usr/bin/install-info ] ; then" >> \$startdir/pkg/install/doinst.sh
         for page in \$(echo \$INFO_LIST) ; do
