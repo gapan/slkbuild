@@ -500,3 +500,25 @@ docs=("readme" "news")'
     assert_in_pkg usr/doc/foo-1/README
     assert_not_in_pkg usr/doc/foo-1/NEWS
 }
+
+test_man_pages_hard_links() {
+    need fakeroot
+    write_slkbuild "" '    M=$startdir/pkg/usr/share/man
+    mkdir -p $M/man1 $M/man3
+    echo a > $M/man1/a.1
+    ln $M/man1/a.1 $M/man1/b.1
+    ln $M/man1/a.1 $M/man3/c.3
+    echo x > $M/man1/single.1'
+    assert_rc 0 build_pkg
+    assert_not_contains build.out "other link"
+    assert_in_pkg usr/man/man1/a.1.gz
+    assert_in_pkg usr/man/man1/single.1.gz
+    pkg_list | grep -q -e 'man1/b\.1$' -e 'man3/c\.3$' && fail "uncompressed man page"
+    local pkg="$PWD/$(pkg_file)"
+    mkdir root
+    (cd root && tar xf "$pkg" && sh install/doinst.sh) || fail "doinst.sh failed"
+    for page in man1/b.1.gz man3/c.3.gz; do
+        [ -L root/usr/man/$page ] || fail "$page is not a symlink"
+        assert_eq "$(zcat root/usr/man/$page)" a "$page contents"
+    done
+}

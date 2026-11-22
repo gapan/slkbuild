@@ -513,6 +513,19 @@ gzip_man_and_info_pages() {
         if [ -d "$startdir/pkg/usr/$DOCS" ]; then
             # I've never seen symlinks in info pages....
             if [ "$DOCS" == "man" ]; then
+                # gzip refuses to compress files with hard links, so turn
+                # the extra hard links into symlinks to the first one
+                previnode=""
+                find $startdir/pkg/usr/man -type f -links +1 -printf '%i %p\n' | \
+                    sort -k1,1n -k2 | \
+                    while read -r inode path; do
+                        if [ "$inode" == "$previnode" ]; then
+                            ln -sfr "$firstpath" "$path"
+                        else
+                            previnode=$inode
+                            firstpath=$path
+                        fi
+                    done
                 (cd $startdir/pkg/usr/$DOCS
                 for manpagedir in $(find . -type d -name "man*" 2> /dev/null) ; do
                     ( cd $manpagedir
