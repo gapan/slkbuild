@@ -395,3 +395,20 @@ test_permissions_dont_follow_symlinks() {
     assert_rc 0 build_pkg
     assert_eq "$(stat -c %a outside/private.key)" 600 "file outside mode"
 }
+
+test_multiline_custom_variables() {
+    need fakeroot
+    write_slkbuild '_files=(
+    a
+    "b c"
+)
+_text="line 1
+line 2"
+_path="$SRC/x"
+_after=1' '    printf "%s|" "${_files[@]}" "$_text" "$_path" "$_after" > $startdir/pkg/usr/bin/foo'
+    assert_rc 0 slkbuild
+    bash -n build-foo.sh || fail "build script has syntax errors"
+    assert_rc 0 build_pkg
+    assert_eq "$(cat pkg/usr/bin/foo)" "a|b c|line 1
+line 2|$PWD/src/x|1|"
+}

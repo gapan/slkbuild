@@ -356,7 +356,24 @@ numjobs=${numjobs:-1}
 package=\$pkgname-\$pkgver-\$arch-$pkgrel
 EOVARIABLES
 
-grep -e "^_[a-zA-Z0-9_]\+=" $startdir/SLKBUILD >> $startdir/build-$pkgname.sh
+#Copy custom variables (names starting with _) as they are written in the
+#SLKBUILD. Assignments may span several lines (e.g. arrays), so keep adding
+#lines until the assignment is complete.
+custom_vars=""
+while IFS= read -r line; do
+    if [ -n "$custom_vars" ]; then
+        custom_vars+=$'\n'"$line"
+    elif [[ $line =~ ^_[a-zA-Z0-9_]+= ]]; then
+        custom_vars="$line"
+    else
+        continue
+    fi
+    # bash -n returns 0 for an unterminated array, so check for errors too
+    if [ -z "$(bash -n <<< "$custom_vars" 2>&1)" ]; then
+        printf '%s\n' "$custom_vars" >> $startdir/build-$pkgname.sh
+        custom_vars=""
+    fi
+done < $startdir/SLKBUILD
 for (( I=0; I < ${#source[@]} ; I++)); do
         source[$I]="\"${source[$I]}\""
 done
