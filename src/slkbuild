@@ -515,7 +515,12 @@ copy_build_script() {
 create_package() {
     ls -lR $startdir/pkg
     cd $startdir/pkg
-    __MAKEPKG__ __LINKPREPEND__ -l y -c n $startdir/$package.__PKGEXT__
+    if ! __MAKEPKG__ __LINKPREPEND__ -l y -c n $startdir/$package.__PKGEXT__ ||
+        [ ! -s $startdir/$package.__PKGEXT__ ]; then
+        echo "ERROR: creating package $package.__PKGEXT__ failed"
+        rm -f $startdir/$package.__PKGEXT__
+        exit 2
+    fi
     cd $startdir
     md5sum $package.__PKGEXT__ > $startdir/$package.md5
 }
@@ -584,6 +589,11 @@ makepkg_internal() {
     *) echo "Unknown compression type" >&2 ; exit 1 ;;
   esac
   tar cvvf - . --format gnu --xform 'sx^\./\(.\)x\1x' --show-stored-names $TAROWNER | $cmp > "$1"
+  local status=("${PIPESTATUS[@]}")
+  if [ "${status[0]}" != "0" ] || [ "${status[1]}" != "0" ]; then
+    echo "Creating package \"$1\" failed" >&2
+    return 1
+  fi
   echo "Slackware package \"$1\" created."
 
 }
