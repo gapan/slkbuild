@@ -729,7 +729,7 @@ setup_dotnew() {
             exit 2
         fi
     done
-    cat<<"EODOTNEW" >\$startdir/pkg/install/doinst.sh
+    cat<<"EODOTNEW" >>\$startdir/pkg/install/doinst.sh
 #Added by slkbuild $slkbuildver
 dotnew() {
         NEW="\${1}.new"
@@ -839,7 +839,7 @@ post_checks(){
         fi
     fi
     # check if we need to add code to handle info pages
-    if [[ -d \$startdir/pkg/usr/info ]] && [[ ! \$(grep install-info \$startdir/pkg/install/doinst.sh &> /dev/null) ]] ; then
+    if [[ -d \$startdir/pkg/usr/info ]] && ! grep -qs install-info \$startdir/pkg/install/doinst.sh ; then
         echo "Found info files - Adding install-info command to doinst.sh"
         INFO_LIST=\$(ls -1 \$startdir/pkg/usr/info)
         echo "" >> \$startdir/pkg/install/doinst.sh
