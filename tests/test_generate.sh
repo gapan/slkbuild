@@ -153,3 +153,29 @@ test_packager_lines_copied() {
         bash -n build-foo.sh || fail "syntax error"
     done
 }
+
+test_arch_flags() {
+    write_slkbuild
+    while IFS='|' read a flags libdir; do
+        arch=$a assert_rc 0 slkbuild
+        assert_contains build-foo.sh "^export CFLAGS=\"$flags\"$"
+        assert_contains build-foo.sh "^export CXXFLAGS=\"$flags\"$"
+        assert_contains build-foo.sh "^export LIBDIRSUFFIX=\"$libdir\"$"
+    done <<'EOT'
+x86_64|-O2 -fPIC|64
+aarch64|-O2 -fPIC|64
+i586|-O2 -march=i586 -mtune=i686|
+i686|-O2 -march=i686 -mtune=i686|
+armv7hl|-O2 -march=armv7-a -mfpu=vfpv3-d16|
+arm|-O2 -march=armv5te|
+noarch|-O2|
+EOT
+}
+
+# arch=noarch is usually set in the SLKBUILD itself
+test_noarch_in_slkbuild() {
+    write_slkbuild 'arch=noarch'
+    assert_rc 0 slkbuild
+    assert_contains build-foo.sh "^arch=noarch$"
+    assert_contains build-foo.sh '^export CFLAGS="-O2"$'
+}
