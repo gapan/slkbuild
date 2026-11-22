@@ -192,7 +192,7 @@ done
 
 #special source check
 if [[ ! "$source" ]]; then
-    echo "source should be filled except in rare occassions (cvs,svn,etc.)"
+    echo "source should be filled except in rare occasions (cvs,svn,etc.)"
 fi
 
 #check for source template
@@ -837,7 +837,7 @@ post_checks(){
         cd \$startdir/pkg/usr/doc/\$pkgname-\$pkgver
         #remove zero length files
         if [[ \$(find . -type f -size 0) ]]; then
-            echo "Removing some zero lenght files"
+            echo "Removing some zero length files"
             find . -type f -size 0 -exec rm -f {} \;
         fi
     fi

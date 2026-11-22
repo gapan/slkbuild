@@ -27,7 +27,7 @@ all of the slackware packaging standards that can be run on its own. See
 The advantage of using slkbuild is that it ensures package uniformity
 and allows for an easy to edit meta-file in the event that one might
 require customization or might need to update the script for new
-releases. It also makes the buid process much quicker as downloading the
+releases. It also makes the build process much quicker as downloading the
 source, untarring, gzipping man and info pages, stripping binaries,
 making sure on graphical applications that the menu entry is compliant
 as well as a host of other things are taken care of automatically
@@ -98,7 +98,7 @@ an integer between 0-11.
 If set, points to an alternative **makepkg** executable. If it is not
 set and if the standard **/sbin/makepkg** Slackware tool is not present,
 or if it is set to **makepkg_internal**, an internal implementation is
-used. This is overriden to the internal implementation if the
+used. This is overridden to the internal implementation if the
 **makepkginternal** option within the **SLKBUILD**(5) meta-file is set.
 
 : **numjobs**
@@ -108,7 +108,7 @@ function of the SLKBUILD file. If not specified, the default value is
 
 : **PKGEXT**
 Sets the package type to use. Could be set to //txz//, //tgz//, //tlz//,
-//tbz// or //tbr//. This is overriden if any respective setting within
+//tbz// or //tbr//. This is overridden if any respective setting within
 the **SLKBUILD**(5) meta-file is set.
 
 

@@ -68,7 +68,7 @@ after its last //=// will be taken as the file name.
 This is an array where you put the description of the software you are
 packaging. On the first line put the package name followed by a space a
 dash and another space and then a short description. On the following
-1-9 lines dependending on how much you need, put a longer explanation.
+1-9 lines depending on how much you need, put a longer explanation.
 Enclose each line in quotes and make sure each line is under 70
 characters, which can be ensured by following the handy ruler provided
 in the //SLKBUILD// prototype created by **slkbuild --generate**. For those
@@ -111,7 +111,7 @@ You fill in whatever documentation that comes with the package. Put:
 ``` docs=("AUTHORS" "LICENSE" "Changelog")
 into this variable and these files
 will be moved over appropriately during the build to be included in
-the package. Don't worry about specifiying any path or the case of
+the package. Don't worry about specifying any path or the case of
 the docs because **slkbuild** does a case insensitive recursive search
 for whatever you provide. If you have more than one, do like I did
 above or like you do in source and put each doc in quotes with a
@@ -160,11 +160,11 @@ put:
 ``` dotnew=('etc/foo.conf')
 and that file in the package (in
 //$startdir/pkg//) will get moved to //foo.conf.new// and a test will be
-put in the //doint.sh// (script that runs after install) to see whether or
+put in the //doinst.sh// (script that runs after install) to see whether or
 not to move it over.
 : **CFLAGS/CXXFLAGS**
 The script already assigned appropriate flags for the project according
-the the specified architecture (see //arch// above), if for some reason
+to the specified architecture (see //arch// above), if for some reason
 those aren't the ones that you want, you can override them using these
 variables.
 : **doinst()**
