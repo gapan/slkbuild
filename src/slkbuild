@@ -482,9 +482,12 @@ gzip_man_and_info_pages() {
                 (cd $startdir/pkg/usr/$DOCS
                 for manpagedir in $(find . -type d -name "man*" 2> /dev/null) ; do
                     ( cd $manpagedir
-                    for eachpage in $( find . -type l -maxdepth 1 2> /dev/null) ; do
-                        ln -s $( readlink $eachpage ).gz $eachpage.gz
+                    for eachpage in $( find . -maxdepth 1 -type l 2> /dev/null) ; do
+                        # don't add .gz to links/targets that already have it
+                        target=$( readlink $eachpage )
+                        target=${target%.gz}.gz
                         rm $eachpage
+                        ln -s $target ${eachpage%.gz}.gz
                     done )
                 done)
             fi
