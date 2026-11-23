@@ -115,7 +115,7 @@ into this variable and these files
 will be moved over appropriately during the build to be included in
 the package. Don't worry about specifying any path or the case of
 the docs because **slkbuild** does a case insensitive recursive search
-for whatever you provide. If you have more than one, do like I did
+for whatever you provide. Wildcards can be used too, e.g. "*.txt". If you have more than one, do like I did
 above or like you do in source and put each doc in quotes with a
 space between them.
 : **options**

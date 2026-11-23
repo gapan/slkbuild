@@ -564,3 +564,23 @@ test_symlinks_special_characters() {
             "${mk:-makepkg}: link in a dir with a space"
     done
 }
+
+# docs=() entries are find patterns, they must not be expanded by the shell
+test_docs_patterns_and_spaces() {
+    need fakeroot
+    mkdir -p foo-1/doc
+    echo a > foo-1/doc/a.txt
+    echo b > foo-1/doc/B.TXT
+    echo r > "foo-1/read me"
+    tar czf foo-1.tar.gz foo-1
+    rm -r foo-1
+    # would match the pattern if it was expanded in the build directory
+    touch notes.txt
+    write_slkbuild 'source=("foo-1.tar.gz")
+docs=("*.txt" "read me")' '    cd $startdir/src/foo-1/doc'
+    assert_rc 0 build_pkg
+    assert_file pkg/usr/doc/foo-1/a.txt
+    assert_file pkg/usr/doc/foo-1/B.TXT
+    assert_file "pkg/usr/doc/foo-1/read me"
+    assert_no_file pkg/usr/doc/foo-1/notes.txt
+}

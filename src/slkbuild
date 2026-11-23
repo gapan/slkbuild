@@ -392,6 +392,9 @@ if [[ ! -z $sourcetemplate ]]; then
         echo "sourcetemplate=$sourcetemplate" >> $startdir/build-$pkgname.sh
     fi
 fi
+for (( I=0; I < ${#docs[@]} ; I++)); do
+    docs[$I]="\"${docs[$I]}\""
+done
 echo "docs=(${docs[@]})" >> $startdir/build-$pkgname.sh
 
 if [ $arch == "x86_64" ]; then
@@ -872,7 +875,7 @@ copy_docs() {
     local docdir=$startdir/pkg/usr/doc/$pkgname-$pkgver
     local -A copied
     mkdir -p $docdir
-    for stuff in ${docs[@]}; do
+    for stuff in "${docs[@]}"; do
         # Source trees often have files with the same name in
         # subdirectories (e.g. vendored code), so use the shallowest match
         # for each file name.
