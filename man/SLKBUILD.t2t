@@ -43,7 +43,8 @@ version 1.0 because of bad //CXXFLAGS//, that one is called //pkgrel// 2.
 If the software advances to 2.0, and you package that, the //pkgrel//
 goes back to 1, and doesn't advance to 3. It's customary to append
 the packagers initials to the package release number when building
-packages that are not official Slackware packages, e.g. "1gv".
+packages that are not official Slackware packages, e.g. "1gv". No
+dashes are allowed.
 : **source**
 This is an array for the source files needed to complete the build. This
 can be anything from a url to a tarball to a local personally created

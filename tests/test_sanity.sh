@@ -43,6 +43,23 @@ test_dash_in_pkgver() {
     assert_contains slkbuild.out "No dashes allowed in pkgver"
 }
 
+test_dash_in_pkgrel_or_arch() {
+    write_slkbuild
+    sed -i 's/^pkgrel=.*/pkgrel=1-gv/' SLKBUILD
+    assert_rc 1 slkbuild
+    assert_contains slkbuild.out "No dashes allowed in pkgrel"
+    write_slkbuild 'arch=x86-64'
+    assert_rc 1 slkbuild
+    assert_contains slkbuild.out "No dashes allowed in arch"
+    write_slkbuild
+    arch=x86-64 assert_rc 1 slkbuild
+    assert_contains slkbuild.out "No dashes allowed in arch"
+    # but pkgname may have them
+    write_slkbuild
+    sed -i 's/^pkgname=.*/pkgname=foo-bar/' SLKBUILD
+    assert_rc 0 slkbuild
+}
+
 test_slackdesc_too_many_lines() {
     write_slkbuild 'slackdesc=(1 2 3 4 5 6 7 8 9 10 11)'
     assert_rc 1 slkbuild

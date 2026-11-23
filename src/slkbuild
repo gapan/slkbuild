@@ -203,8 +203,11 @@ fi
     err "No build() function found"
 
 #check that variables are sane
-[[ "$(echo $pkgver | grep -E '\-')" ]] &&
-        err "No dashes allowed in pkgver"
+#package names are split at the dashes, so only pkgname may have them
+for VAR in pkgver pkgrel arch; do
+    [[ "${!VAR}" == *-* ]] &&
+        err "No dashes allowed in $VAR"
+done
 
 [[ "${slackdesc[10]}" ]] &&
     err "No more than 10 lines allowed in slackdesc"
