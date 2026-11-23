@@ -597,3 +597,23 @@ test_extract_failure() {
     assert_contains build.out "Extracting foo-1.tar.gz failed"
     assert_no_file foo-1-x86_64-1.txz
 }
+
+# Build a small meson project with the meson template
+test_meson_template() {
+    need fakeroot meson ninja cc
+    mkdir foo-1
+    printf "project('foo', 'c')\nexecutable('foo', 'foo.c', install: true)\n" \
+        > foo-1/meson.build
+    echo 'int main(void) { return 0; }' > foo-1/foo.c
+    tar czf foo-1.tar.gz foo-1
+    rm -r foo-1
+    assert_rc 0 slkbuild -g meson
+    sed -i -e '1c#Packager: Test <test@example.com>' \
+        -e 's/^pkgname=$/pkgname=foo/' -e 's/^pkgver=$/pkgver=1/' \
+        -e 's/^pkgrel=$/pkgrel=1/' -e 's/^source=()$/source=("foo-1.tar.gz")/' \
+        -e 's/^""$/"foo (test package)"/' SLKBUILD
+    assert_rc 0 build_pkg
+    assert_in_pkg usr/bin/foo
+    meson configure src/foo-1/build > options.out
+    assert_contains options.out "^ *buildtype  *release "
+}
