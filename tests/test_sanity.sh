@@ -94,10 +94,12 @@ test_packager_line_missing() {
 }
 
 test_packager_line_placeholder() {
-    write_slkbuild
-    sed -i '1c#Packager: Name <email@address.com>' SLKBUILD
-    assert_rc 1 slkbuild
-    assert_contains slkbuild.out "Packager or Maintainer isn't set"
+    for hdr in "#Packager:" "# Packager:" "#Maintainer:" "# Maintainer:"; do
+        write_slkbuild
+        sed -i "1c$hdr Name <email@address.com>" SLKBUILD
+        assert_rc 1 slkbuild
+        assert_contains slkbuild.out "Packager or Maintainer isn't set"
+    done
 }
 
 test_invalid_option_in_options() {
