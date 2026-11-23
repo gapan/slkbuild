@@ -189,3 +189,13 @@ test_templates_option_lines_continued() {
         [ -z "$bad" ] || fail "missing line continuation: $bad"
     done
 }
+
+test_arch_from_ARCH_environment_variable() {
+    write_slkbuild
+    unset arch
+    ARCH=i586 assert_rc 0 slkbuild
+    assert_contains build-foo.sh "^arch=i586$"
+    # arch has priority
+    arch=i686 ARCH=i586 assert_rc 0 slkbuild
+    assert_contains build-foo.sh "^arch=i686$"
+}

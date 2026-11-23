@@ -162,7 +162,9 @@ if [ "$GENERATE" = "1" ]; then
 fi
 [ $# -gt 0 ] && err "Incorrect usage, see slkbuild --help"
 
-#If arch is not set, determine it automatically
+#ARCH can be used instead of arch. If neither is set, determine it
+#automatically
+arch=${arch:-$ARCH}
 if [ -z "$arch" ]; then
     case "$( uname -m )" in
         i?86) export arch=i586 ;;
