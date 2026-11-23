@@ -287,6 +287,26 @@ test_auto_dotnew() {
     assert_contains doinst.sh "^dotnew etc/foo.conf$"
 }
 
+# Files that build() already installed as .new aren't renamed again
+test_auto_dotnew_existing_new_file() {
+    need fakeroot
+    write_slkbuild "" '    mkdir -p $startdir/pkg/etc
+    echo a > $startdir/pkg/etc/foo.conf.new
+    echo b > $startdir/pkg/etc/bar.conf'
+    assert_rc 0 build_pkg
+    assert_in_pkg etc/foo.conf.new
+    assert_not_in_pkg etc/foo.conf.new.new
+    assert_in_pkg etc/bar.conf.new
+    local pkg="$PWD/$(pkg_file)"
+    mkdir root
+    (cd root && tar xf "$pkg" && sh install/doinst.sh) ||
+        fail "doinst.sh failed"
+    assert_eq "$(cat root/etc/foo.conf)" a
+    assert_eq "$(cat root/etc/bar.conf)" b
+    assert_no_file root/etc/foo.conf.new
+    assert_no_file root/etc/bar.conf.new
+}
+
 test_noautodotnew() {
     need fakeroot
     write_slkbuild "options=('noautodotnew')" '    mkdir -p $startdir/pkg/etc

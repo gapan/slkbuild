@@ -979,10 +979,15 @@ cat <<NOAUTODOTNEW>>$startdir/build-$pkgname.sh
         cd \$startdir/pkg/
         for conf in \$(find ./etc -type f) ; do
             conf=\${conf: 2}
-            dotnew=( "\${dotnew[@]}" "\$conf" )
+            if [[ "\$conf" == *.new ]]; then
+                # already installed as .new by build(), don't rename it
+                prenew=( "\${prenew[@]}" "\${conf%.new}" )
+            else
+                dotnew=( "\${dotnew[@]}" "\$conf" )
+            fi
         done
     fi
-    if [[ "\$dotnew" ]]; then
+    if [[ "\$dotnew" ]] || [[ "\$prenew" ]]; then
         for files in \${dotnew[@]} ; do
                 fullfile="\${startdir}/pkg/\${files}"
                 if [ -e "\$fullfile" ]; then
@@ -1004,7 +1009,7 @@ dotnew() {
         fi
 }
 EODOTNEW
-for i in \${dotnew[@]}; do
+for i in \${dotnew[@]} \${prenew[@]}; do
 echo "dotnew \$i" >> \$startdir/pkg/install/doinst.sh
 done
 fi
