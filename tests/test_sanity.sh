@@ -136,3 +136,12 @@ test_syntax_error() {
     assert_rc 1 slkbuild
     assert_contains slkbuild.out "ERROR: Syntax error in SLKBUILD"
 }
+
+# A SLKBUILD may define helper functions with common names
+test_slkbuild_defines_err() {
+    write_slkbuild 'err() { echo "my err: $*"; }'
+    sed -i '/^slackdesc=/d' SLKBUILD
+    assert_rc 1 slkbuild
+    assert_contains slkbuild.out 'ERROR: variable "slackdesc" is not set'
+    assert_no_file build-foo.sh
+}

@@ -4,7 +4,9 @@
 slkbuildver=1.9
 startdir="$(pwd)"
 
-err()
+# Not called err(), so that a SLKBUILD defining its own err() doesn't
+# replace it
+slkbuild_err()
 {
     echo "ERROR: $1"
     exit 1
@@ -44,7 +46,7 @@ generate_slkbuild() {
     [ -n "$EXTENSION" ] && ACTUALFILE+=".$EXTENSION"
     TEMPLATE="@sysconfdir@/slkbuild/$ACTUALFILE"
     if [ ! -f "$TEMPLATE" ]; then
-        err "No $TEMPLATE found in @sysconfdir@, exiting."
+        slkbuild_err "No $TEMPLATE found in @sysconfdir@, exiting."
     elif [ -f "$startdir/SLKBUILD" ]; then
         echo "There is already a SLKBUILD in the current directory."
         echo -n "Generate SLKBUILD and overwrite it anyways? [y/N] "
@@ -110,7 +112,7 @@ LONGOPTS="help,version,x-and-clean,execute,generate::,clean-dirs"
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
 #TEMP=`getopt -o $SHORTOPTS --long $LONGOPTS -n build --"$@"`
 TEMP=$(getopt -o $SHORTOPTS --long $LONGOPTS -n slkbuild -- "$@") ||
-    err "Incorrect usage, see slkbuild --help"
+    slkbuild_err "Incorrect usage, see slkbuild --help"
 
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
@@ -145,7 +147,7 @@ while [ $# -gt 0 ]; do
             break
             ;;
         *)
-            err "Incorrect usage, see slkbuild --help"
+            slkbuild_err "Incorrect usage, see slkbuild --help"
     esac
     shift
 done
@@ -156,11 +158,11 @@ if [ "$GENERATE" = "1" ]; then
         PROTOTYPE="$1"
         shift
     fi
-    [ $# -gt 0 ] && err "Incorrect usage, see slkbuild --help"
+    [ $# -gt 0 ] && slkbuild_err "Incorrect usage, see slkbuild --help"
     generate_slkbuild "$PROTOTYPE"
     exit
 fi
-[ $# -gt 0 ] && err "Incorrect usage, see slkbuild --help"
+[ $# -gt 0 ] && slkbuild_err "Incorrect usage, see slkbuild --help"
 
 #ARCH can be used instead of arch. If neither is set, determine it
 #automatically
@@ -183,7 +185,7 @@ if [ -f "${startdir}/SLKBUILD" ]; then
     syntax_errors=$(bash -n "${startdir}/SLKBUILD" 2>&1)
     if [ $? -ne 0 ] || [ -n "$syntax_errors" ]; then
         echo "$syntax_errors"
-        err "Syntax error in SLKBUILD"
+        slkbuild_err "Syntax error in SLKBUILD"
     fi
     unset pkgname pkgver pkgrel source extradepends options \
           dotnew url CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX \
@@ -191,14 +193,14 @@ if [ -f "${startdir}/SLKBUILD" ]; then
     functions_before=$(declare -F | awk '{print $3}')
     . ${startdir}/SLKBUILD
 else
-    err "No SLKBUILD found in directory, see slkbuild --help"
+    slkbuild_err "No SLKBUILD found in directory, see slkbuild --help"
 fi
 
 ##################Sanity Tests Begin######################################
 #Check that variables exist
 for VAR in pkgname pkgver pkgrel slackdesc; do
     [[ ! "${!VAR}" ]] &&
-        err "variable \"${VAR}\" is not set"
+        slkbuild_err "variable \"${VAR}\" is not set"
 done
 
 #special source check
@@ -210,22 +212,22 @@ fi
 
 #does build() exist?
 ! declare -F build >/dev/null &&
-    err "No build() function found"
+    slkbuild_err "No build() function found"
 
 #check that variables are sane
 #package names are split at the dashes, so only pkgname may have them
 for VAR in pkgver pkgrel arch; do
     [[ "${!VAR}" == *-* ]] &&
-        err "No dashes allowed in $VAR"
+        slkbuild_err "No dashes allowed in $VAR"
 done
 
 [[ "${slackdesc[10]}" ]] &&
-    err "No more than 10 lines allowed in slackdesc"
+    slkbuild_err "No more than 10 lines allowed in slackdesc"
 
 if grep -q -e "^# \?\(Maintainer\|Packager\): Name <email@address.com>" $startdir/SLKBUILD; then
-      err "Packager or Maintainer isn't set in SLKBUILD, exiting"
+      slkbuild_err "Packager or Maintainer isn't set in SLKBUILD, exiting"
 elif [ ! "$(grep -e "^#Maintainer:\|^# Maintainer:\|^#Packager:\|^# Packager:" $startdir/SLKBUILD)" ]; then
-      err "Please specify #Packager: or #Maintainer: in first line of your SLKBUILD. Exiting."
+      slkbuild_err "Please specify #Packager: or #Maintainer: in first line of your SLKBUILD. Exiting."
 fi
 
 #Check for numerous commentaries
@@ -256,7 +258,7 @@ for SOURCES in "${source[@]}"; do
             fi
             mv "$file.part" "$file"
         else
-            err "$SOURCES does not appear to be a url nor is it in the directory"
+            slkbuild_err "$SOURCES does not appear to be a url nor is it in the directory"
         fi
     else
         echo "$file found in current directory"
@@ -268,7 +270,7 @@ for ((LINE=0 ; LINE < 10 ; LINE++)); do
     REALLINE=$(expr $LINE + 1)
     if [ "${#slackdesc[$LINE]}" -gt "70" ] ; then
         let "extrachar=${#slackdesc[$LINE]}-70"
-        err "Line ${REALLINE}: '${slackdesc[$LINE]}' is greater than 70 characters, make it $extrachar characters shorter."
+        slkbuild_err "Line ${REALLINE}: '${slackdesc[$LINE]}' is greater than 70 characters, make it $extrachar characters shorter."
     fi
 done
 
