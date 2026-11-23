@@ -236,7 +236,7 @@ for SOURCES in "${source[@]}"; do
             echo -e "\nDownloading $file\n"
             # download to a temporary name, so that an interrupted
             # download isn't taken for a complete file next time
-            if ! wget -c --no-check-certificate "${SOURCES%=*}" -O "$file.part"; then
+            if ! wget -c "${SOURCES%=*}" -O "$file.part"; then
                 echo "Download failed"
                 rm -f "$file.part"
                 exit 2
@@ -703,7 +703,7 @@ prepare_directory() {
                 echo -e "\nDownloading \$file\n"
                 # download to a temporary name, so that an interrupted
                 # download isn't taken for a complete file next time
-                if ! wget -c --no-check-certificate "\${SOURCES%=*}" -O "\$file.part"; then
+                if ! wget -c "\${SOURCES%=*}" -O "\$file.part"; then
                     echo "Download failed"
                     rm -f "\$file.part"
                     exit 2

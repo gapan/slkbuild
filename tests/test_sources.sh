@@ -3,16 +3,25 @@
 
 # Start an HTTP server that serves foo-1.tar.gz for any path and logs the
 # requested paths to requests.log. Sets SERVER_URL. With "stall", it only
-# sends the first half of the file and then hangs.
+# sends the first half of the file and then hangs. With "https", it uses a
+# self-signed certificate, cert.pem.
 start_server() {
     need python3 wget
     mkdir www
     mkdir www/foo-1
     echo "read me" > www/foo-1/README
     (cd www && tar czf foo-1.tar.gz foo-1 && rm -r foo-1)
+    if [ "$1" == "https" ]; then
+        need openssl
+        openssl req -x509 -newkey rsa:2048 -nodes -days 1 \
+            -subj /CN=127.0.0.1 -addext subjectAltName=IP:127.0.0.1 \
+            -keyout key.pem -out cert.pem > /dev/null 2>&1 ||
+            fail "couldn't create a certificate"
+    fi
     cat > server.py <<'EOF'
-import http.server, sys, time
-tarball, log, stall = sys.argv[1], sys.argv[2], sys.argv[3] == "stall"
+import http.server, ssl, sys, time
+tarball, log, mode = sys.argv[1], sys.argv[2], sys.argv[3]
+stall = mode == "stall"
 class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         with open(log, "a") as f:
@@ -29,6 +38,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
     def log_message(self, *args):
         pass
 server = http.server.HTTPServer(("127.0.0.1", 0), Handler)
+if mode == "https":
+    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ctx.load_cert_chain("cert.pem", "key.pem")
+    server.socket = ctx.wrap_socket(server.socket, server_side=True)
 print(server.server_address[1], flush=True)
 server.serve_forever()
 EOF
@@ -41,7 +54,9 @@ EOF
         sleep 0.1
     done
     [ -s port ] || fail "HTTP server didn't start"
-    SERVER_URL="http://127.0.0.1:$(cat port)"
+    local scheme=http
+    [ "$1" == "https" ] && scheme=https
+    SERVER_URL="$scheme://127.0.0.1:$(cat port)"
     : > requests.log
 }
 
@@ -133,4 +148,24 @@ test_interrupted_download_not_kept() {
     assert_rc 2 slkbuild
     assert_not_contains slkbuild.out "found in current directory"
     assert_contains slkbuild.out "Download failed"
+}
+
+# Certificates are verified, so that sources can't be replaced on the way
+test_download_https_certificate_checked() {
+    need fakeroot
+    start_server https
+    write_slkbuild "source=(\"$SERVER_URL/foo-1.tar.gz\")"
+    assert_rc 2 slkbuild
+    assert_contains slkbuild.out "Download failed"
+    assert_no_file foo-1.tar.gz
+    # the build script checks them too
+    echo x > foo-1.tar.gz
+    assert_rc 0 slkbuild
+    rm foo-1.tar.gz
+    assert_rc 2 fakeroot ./build-foo.sh > build.out 2>&1
+    assert_contains build.out "Download failed"
+    # and it works once the certificate is trusted
+    echo "ca_certificate = $PWD/cert.pem" > wgetrc
+    WGETRC=$PWD/wgetrc assert_rc 0 slkbuild
+    assert_file foo-1.tar.gz
 }

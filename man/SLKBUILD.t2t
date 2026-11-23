@@ -64,6 +64,9 @@ will download ``http://url/download.php?id=42`` and save it as
 //mysoft-1.0.tar.gz//. Note that this means a url that contains an //=//
 sign must always be given a file name like this, otherwise the part
 after its last //=// will be taken as the file name.
+Sources are downloaded with **wget**, which checks the certificates of
+https servers. Settings like a different //ca_certificate// can be
+given in //~/.wgetrc//.
 : **slackdesc**
 This is an array where you put the description of the software you are
 packaging. On the first line put the package name followed by a space a
