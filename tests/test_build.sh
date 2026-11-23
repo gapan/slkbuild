@@ -632,3 +632,19 @@ test_build_script_run_from_another_directory() {
     assert_file foo-1-x86_64-1.txz
     assert_in_pkg usr/src/foo-1/SLKBUILD
 }
+
+# numjobs given when generating is the default, but it can be overridden
+# when running the build script
+test_numjobs() {
+    need fakeroot
+    write_slkbuild '' '    echo $numjobs > $startdir/pkg/usr/bin/numjobs'
+    numjobs=3 assert_rc 0 slkbuild
+    fakeroot ./build-foo.sh > build.out 2>&1 || fail "build failed"
+    assert_eq "$(pkg_cat usr/bin/numjobs)" 3
+    numjobs=5 fakeroot ./build-foo.sh > build.out 2>&1 || fail "build failed"
+    assert_eq "$(pkg_cat usr/bin/numjobs)" 5
+    unset numjobs
+    assert_rc 0 slkbuild
+    fakeroot ./build-foo.sh > build.out 2>&1 || fail "build failed"
+    assert_eq "$(pkg_cat usr/bin/numjobs)" 1
+}
