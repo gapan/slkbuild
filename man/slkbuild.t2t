@@ -58,7 +58,7 @@ Does everything that running it with no arguments would but afterwards
 actually executes the //build-$pkgname.sh// script. Remember that like
 running any build script, this option will require you to be root. This
 option does log the output of the build script's execution to
-//build-$pkgname.log// in the current directory.
+//build-$pkgname-$pkgver-$arch-$pkgrel.log// in the current directory.
 
 : **-c**, **--clean-dirs**
 Creates a //build-$pkgname.sh// script that, when it is run, will remove
