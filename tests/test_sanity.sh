@@ -122,3 +122,15 @@ test_commented_variables_warning() {
     assert_rc 0 slkbuild
     assert_not_contains slkbuild.out "commented variables"
 }
+
+test_syntax_error() {
+    write_slkbuild
+    printf 'doinst() {\n    if true; then echo hi\n}\n' >> SLKBUILD
+    assert_rc 1 slkbuild
+    assert_contains slkbuild.out "ERROR: Syntax error in SLKBUILD"
+    assert_no_file build-foo.sh
+    # bash -n returns 0 for this one, but still reports it
+    write_slkbuild '_files=('
+    assert_rc 1 slkbuild
+    assert_contains slkbuild.out "ERROR: Syntax error in SLKBUILD"
+}

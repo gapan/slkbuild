@@ -177,6 +177,14 @@ fi
 
 #Source the SLKBUILD script
 if [ -f "${startdir}/SLKBUILD" ]; then
+    # Sourcing it would carry on after a syntax error, without whatever
+    # couldn't be parsed. bash -n doesn't always return an error status,
+    # so check its output too.
+    syntax_errors=$(bash -n "${startdir}/SLKBUILD" 2>&1)
+    if [ $? -ne 0 ] || [ -n "$syntax_errors" ]; then
+        echo "$syntax_errors"
+        err "Syntax error in SLKBUILD"
+    fi
     unset pkgname pkgver pkgrel source extradepends options \
           dotnew url CFLAGS CXXFLAGS SLKCFLAGS LIBDIRSUFFIX \
           slackdesc doinst douninst build docs sourcetemplate
