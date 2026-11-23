@@ -153,7 +153,9 @@ If you set more than one of //txz//, //tgz//, //tlz//, //tbz// or
 This is a template to where the source will be put online (the ones that
 don't contain a full url). E.g.:
 ``` sourcetemplate=http://yourepo.org/$pkgname/$pkgver
-If sourcetemplate is not set, an //.src// file will not be created.
+The //.src// file that is created next to the package lists the urls of
+the //SLKBUILD// and of all sources, e.g. for use with //wget -i//. If
+sourcetemplate is not set, an //.src// file will not be created.
 : **url**
 A homepage or some other information url about the software.
 : **dotnew**

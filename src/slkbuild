@@ -930,7 +930,8 @@ create_source_file(){
                     echo \$(basename \$SOURCES) >> \$package.src
                 fi
             else
-                echo \$SOURCES >> \$package.src
+                # only the url, for tools like wget -i
+                echo "\${SOURCES%=*}" >> \$package.src
             fi
         done
     fi

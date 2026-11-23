@@ -695,3 +695,18 @@ musl --docdir
 cmake -DCMAKE_INSTALL_DOCDIR
 EOT
 }
+
+# The .src file lists the urls of all sources, for tools like wget -i
+test_source_file() {
+    need fakeroot
+    touch a.patch foo-1.tar.gz bar-2.tar.gz
+    write_slkbuild 'source=("http://example.com/get.php?id=42=foo-1.tar.gz"
+        "https://example.com/bar-2.tar.gz" "a.patch")
+sourcetemplate=http://repo.example.com/foo/1/
+options=("noextract")'
+    assert_rc 0 build_pkg
+    assert_eq "$(cat foo-1-x86_64-1.src)" "http://repo.example.com/foo/1/SLKBUILD
+http://example.com/get.php?id=42
+https://example.com/bar-2.tar.gz
+http://repo.example.com/foo/1/a.patch"
+}
