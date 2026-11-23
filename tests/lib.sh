@@ -48,6 +48,15 @@ pkg_cat() {
     tar xOf "$(pkg_file)" "$1"
 }
 
+# Fill in the SLKBUILD created by "slkbuild -g" for package foo-1, with
+# foo-1.tar.gz as its source
+fill_template() {
+    sed -i -e '1c#Packager: Test <test@example.com>' \
+        -e 's/^pkgname=$/pkgname=foo/' -e 's/^pkgver=$/pkgver=1/' \
+        -e 's/^pkgrel=$/pkgrel=1/' -e 's/^source=()$/source=("foo-1.tar.gz")/' \
+        -e 's/^""$/"foo (test package)"/' SLKBUILD
+}
+
 need() {
     for cmd in "$@"; do
         command -v "$cmd" >/dev/null 2>&1 || skip "$cmd not found"

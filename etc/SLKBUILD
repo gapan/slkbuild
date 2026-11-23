@@ -38,6 +38,7 @@ build() {
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--localstatedir=/var \
 		--sysconfdir=/etc \
+		--docdir=/usr/doc/$pkgname-$pkgver \
 		--build=$arch-slackware-linux
 	make -j $numjobs || return 1
 	make install DESTDIR=$startdir/pkg

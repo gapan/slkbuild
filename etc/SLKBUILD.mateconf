@@ -39,6 +39,7 @@ build() {
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--localstatedir=/var \
 		--sysconfdir=/etc \
+		--docdir=/usr/doc/$pkgname-$pkgver \
 		--disable-schemas-install \
 		--with-mateconf-source="xml::/etc/mateconf/mateconf.xml.defaults" \
 		--build=$arch-slackware-linux

@@ -47,6 +47,7 @@ build() {
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DLIB_SUFFIX=${LIBDIRSUFFIX} \
 		-DMAN_INSTALL_DIR=/usr/man \
+		-DCMAKE_INSTALL_DOCDIR=/usr/doc/$pkgname-$pkgver \
 		-DCMAKE_BUILD_TYPE=Release \
 		..
 	make -j $numjobs || return 1

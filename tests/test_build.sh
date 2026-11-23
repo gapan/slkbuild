@@ -628,10 +628,7 @@ test_meson_template() {
     tar czf foo-1.tar.gz foo-1
     rm -r foo-1
     assert_rc 0 slkbuild -g meson
-    sed -i -e '1c#Packager: Test <test@example.com>' \
-        -e 's/^pkgname=$/pkgname=foo/' -e 's/^pkgver=$/pkgver=1/' \
-        -e 's/^pkgrel=$/pkgrel=1/' -e 's/^source=()$/source=("foo-1.tar.gz")/' \
-        -e 's/^""$/"foo (test package)"/' SLKBUILD
+    fill_template
     assert_rc 0 build_pkg
     assert_in_pkg usr/bin/foo
     meson configure src/foo-1/build > options.out
@@ -667,4 +664,34 @@ test_numjobs() {
     assert_rc 0 slkbuild
     fakeroot ./build-foo.sh > build.out 2>&1 || fail "build failed"
     assert_eq "$(pkg_cat usr/bin/numjobs)" 1
+}
+
+# Docs go to usr/doc/$pkgname-$pkgver, like the ones from docs=(). The
+# build tools are replaced with stubs that record their arguments.
+test_templates_docdir() {
+    need fakeroot
+    mkdir bin
+    for cmd in cmake make musl-gcc; do
+        printf '#!/bin/sh\necho "$*" >> "$ARGS_FILE"\n' > bin/$cmd
+        chmod +x bin/$cmd
+    done
+    mkdir foo-1
+    cp bin/cmake foo-1/configure
+    tar czf foo-1.tar.gz foo-1
+    rm -r foo-1
+    export ARGS_FILE="$PWD/args"
+    while read -r template docdir; do
+        rm -f args SLKBUILD
+        [ "$template" = "-" ] && template=""
+        assert_rc 0 slkbuild -g $template
+        fill_template
+        PATH="$PWD/bin:$PATH" assert_rc 0 build_pkg
+        assert_contains args "$docdir=/usr/doc/foo-1 "
+    done <<'EOT'
+- --docdir
+gconf --docdir
+mateconf --docdir
+musl --docdir
+cmake -DCMAKE_INSTALL_DOCDIR
+EOT
 }
