@@ -179,3 +179,13 @@ test_noarch_in_slkbuild() {
     assert_contains build-foo.sh "^arch=noarch$"
     assert_contains build-foo.sh '^export CFLAGS="-O2"$'
 }
+
+# An option line in a template's build() must follow a continued line,
+# otherwise the shell runs it as a command of its own
+test_templates_option_lines_continued() {
+    for template in "$REPO_DIR"/etc/SLKBUILD*; do
+        bad=$(awk '/^[ \t]*-/ && prev !~ /\\$/ { print FILENAME ":" FNR ": " $0 }
+                   { prev = $0 }' "$template")
+        [ -z "$bad" ] || fail "missing line continuation: $bad"
+    done
+}

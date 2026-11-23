@@ -38,7 +38,7 @@ build() {
 	cd $startdir/src/$pkgname-$pkgver
 	./configure --prefix=/usr \
 		--libdir=/usr/lib${LIBDIRSUFFIX}/musl \
-		--includedir=/usr/include/musl
+		--includedir=/usr/include/musl \
 		--localstatedir=/var \
 		--sysconfdir=/etc \
 		--build=$arch-slackware-linux
