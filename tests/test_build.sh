@@ -617,3 +617,18 @@ test_meson_template() {
     meson configure src/foo-1/build > options.out
     assert_contains options.out "^ *buildtype  *release "
 }
+
+# The build script works in its own directory, wherever it's run from
+test_build_script_run_from_another_directory() {
+    need fakeroot
+    write_slkbuild
+    assert_rc 0 slkbuild
+    mkdir -p elsewhere/src/keep elsewhere/pkg
+    touch elsewhere/src/keep/important
+    (cd elsewhere && fakeroot ../build-foo.sh > ../build.out 2>&1) ||
+        { cat build.out; fail "build script failed"; }
+    assert_file elsewhere/src/keep/important
+    assert_no_file elsewhere/foo-1-x86_64-1.txz
+    assert_file foo-1-x86_64-1.txz
+    assert_in_pkg usr/src/foo-1/SLKBUILD
+}

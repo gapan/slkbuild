@@ -355,6 +355,9 @@ grep -e "^# \?Former \(Maintainer\|Packager\)(s)" \
 cat <<EOVARIABLES >>$startdir/build-$pkgname.sh
 
 ###Variables
+# Always work in the directory of the build script, which is where the
+# SLKBUILD and sources are, even if it's run from somewhere else
+cd "\$(dirname "\$0")" || exit 1
 startdir=\$(pwd)
 SRC=\$startdir/src
 PKG=\$startdir/pkg
