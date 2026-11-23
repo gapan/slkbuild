@@ -2,7 +2,8 @@
 # vim:et:sta:sts=4:sw=4:ts=8:tw=79:
 
 # Start an HTTP server that serves foo-1.tar.gz for any path and logs the
-# requested paths to requests.log. Sets SERVER_URL.
+# requested paths to requests.log. Sets SERVER_URL. With "stall", it only
+# sends the first half of the file and then hangs.
 start_server() {
     need python3 wget
     mkdir www
@@ -10,8 +11,8 @@ start_server() {
     echo "read me" > www/foo-1/README
     (cd www && tar czf foo-1.tar.gz foo-1 && rm -r foo-1)
     cat > server.py <<'EOF'
-import http.server, sys
-tarball, log = sys.argv[1], sys.argv[2]
+import http.server, sys, time
+tarball, log, stall = sys.argv[1], sys.argv[2], sys.argv[3] == "stall"
 class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         with open(log, "a") as f:
@@ -20,6 +21,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
+        if stall:
+            self.wfile.write(data[:len(data) // 2])
+            self.wfile.flush()
+            time.sleep(60)
         self.wfile.write(data)
     def log_message(self, *args):
         pass
@@ -28,7 +33,7 @@ print(server.server_address[1], flush=True)
 server.serve_forever()
 EOF
     python3 -I server.py "$PWD/www/foo-1.tar.gz" "$PWD/requests.log" \
-        > port 2>/dev/null &
+        "$1" > port 2>/dev/null &
     SERVER_PID=$!
     trap 'kill $SERVER_PID 2>/dev/null' EXIT
     for i in $(seq 50); do
@@ -105,4 +110,27 @@ test_failed_download_in_build_script() {
     assert_rc 2 fakeroot ./build-foo.sh > build.out 2>&1
     assert_contains build.out "Download failed"
     assert_no_file foo-1.tar.gz
+}
+
+# An interrupted download must not be taken for a complete file next time
+test_interrupted_download_not_kept() {
+    start_server stall
+    write_slkbuild "source=(\"$SERVER_URL/foo-1.tar.gz\")"
+    # in its own process group, so that wget can be killed along with it
+    setsid "$SLKBUILD_BIN" > slkbuild.out 2>&1 &
+    local pid=$!
+    for i in $(seq 50); do
+        [ -s foo-1.tar.gz.part ] || [ -s foo-1.tar.gz ] && break
+        sleep 0.1
+    done
+    [ -s foo-1.tar.gz.part ] || [ -s foo-1.tar.gz ] ||
+        fail "download didn't start"
+    # background jobs ignore SIGINT, so use SIGTERM
+    kill -TERM -- -$pid
+    wait $pid
+    assert_no_file foo-1.tar.gz
+    kill $SERVER_PID
+    assert_rc 2 slkbuild
+    assert_not_contains slkbuild.out "found in current directory"
+    assert_contains slkbuild.out "Download failed"
 }

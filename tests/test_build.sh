@@ -584,3 +584,16 @@ docs=("*.txt" "read me")' '    cd $startdir/src/foo-1/doc'
     assert_file "pkg/usr/doc/foo-1/read me"
     assert_no_file pkg/usr/doc/foo-1/notes.txt
 }
+
+test_extract_failure() {
+    need fakeroot
+    mkdir foo-1
+    head -c 100000 /dev/urandom > foo-1/data
+    tar czf full.tar.gz foo-1
+    rm -r foo-1
+    head -c 50000 full.tar.gz > foo-1.tar.gz
+    write_slkbuild 'source=("foo-1.tar.gz")'
+    assert_rc 2 build_pkg
+    assert_contains build.out "Extracting foo-1.tar.gz failed"
+    assert_no_file foo-1-x86_64-1.txz
+}
